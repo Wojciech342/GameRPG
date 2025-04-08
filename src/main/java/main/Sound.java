@@ -17,4 +17,24 @@ public class Sound {
         soundURL[3] = getClass().getResource("/sound/unlock.wav");
         soundURL[4] = getClass().getResource("/sound/fanfare.wav");
     }
+
+    public void setFile(int i) {
+        try {
+            AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]);
+            clip = AudioSystem.getClip();
+            clip.open(ais);
+            fc = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void play() {
+        clip.start();
+    }
+    public void loop() {
+        clip.loop(Clip.LOOP_CONTINUOUSLY);
+    }
+    public void stop() {
+        clip.stop();
+    }
 }
