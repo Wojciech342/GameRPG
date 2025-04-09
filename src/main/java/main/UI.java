@@ -187,7 +187,50 @@ public class UI { // UI - User interface
             }
         }
     }
+    public void drawMonsterLife() {
 
+        for(int i = 0; i < gp.monster[1].length; i++) {
+
+            Entity monster = gp.monster[gp.currentMap][i];
+            if(monster != null && monster.inCamera() == true) {
+                if(monster.hpBarOn == true && monster.boss == false) {
+
+                    double oneScale = (double)gp.tileSize/monster.maxLife;
+                    double hpBarValue = oneScale*monster.life;
+
+                    g2.setColor(new Color(35,35,35));
+                    g2.fillRect(monster.getScreenX()-1, monster.getScreenY() - 16, gp.tileSize+2, 12);
+
+                    g2.setColor(new Color(255,0,30));
+                    g2.fillRect(monster.getScreenX(), monster.getScreenY() - 15, (int)hpBarValue, 10);
+
+                    monster.hpBarCounter++;
+
+                    if(monster.hpBarCounter > 300) {
+                        monster.hpBarOn = false;
+                        monster.hpBarCounter = 0;
+                    }
+                }
+                else if(monster.boss == true) {
+                    double oneScale = (double)gp.tileSize*8/monster.maxLife;
+                    double hpBarValue = oneScale*monster.life;
+
+                    int x = gp.screenWidth/2 - gp.tileSize*4;
+                    int y = gp.tileSize*10; // Constant hp bar coordinates for boss
+
+                    g2.setColor(new Color(35,35,35)); // hp container for red bar
+                    g2.fillRect(x-1, y-1, gp.tileSize*8 + 2, 22);
+
+                    g2.setColor(new Color(255,0,30)); // hp red bar
+                    g2.fillRect(x, y, (int)hpBarValue, 20);
+
+                    g2.setFont(g2.getFont().deriveFont(Font.BOLD,24f));
+                    g2.setColor(Color.white);
+                    g2.drawString(monster.name, x + 4, y - 10);
+                }
+            }
+        }
+    }
 
 
 
