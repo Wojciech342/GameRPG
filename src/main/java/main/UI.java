@@ -68,7 +68,6 @@ public class UI { // UI - User interface
 
         g2.setColor(Color.white);
     }
-
     public void drawPauseScreen() {
         g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 80F));
         String text = "PAUSED";
@@ -76,6 +75,63 @@ public class UI { // UI - User interface
         int y = gp.screenHeight/2;
 
         g2.drawString(text, x, y);
+    }
+    public void drawDialogueScreen() {
+        // WINDOW
+        int x = gp.tileSize*3;
+        int y = gp.tileSize/2;
+        int width = gp.screenWidth - (gp.tileSize*6);
+        int height = gp.tileSize*4;
+        drawSubWindow(x, y, width, height);
+
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 23F));
+        x += gp.tileSize;
+        y += gp.tileSize;
+
+        if(npc.dialogues[npc.dialogueSet][npc.dialogueIndex] != null) {
+
+            //currentDialogue = npc.dialogues[npc.dialogueSet][npc.dialogueIndex];
+
+            char characters[] = npc.dialogues[npc.dialogueSet][npc.dialogueIndex].toCharArray();
+
+            if(charIndex < characters.length) {
+
+                gp.playSE(17);
+                String s  = String.valueOf(characters[charIndex]);
+                combinedText = combinedText + s;
+                currentDialogue = combinedText;
+
+                charIndex++;
+            }
+
+            if(gp.keyH.enterPressed == true) {
+
+                charIndex = 0;
+                combinedText = "";
+
+                if(gp.gameState == gp.dialogueState || gp.gameState == gp.cutSceneState) {
+
+                    npc.dialogueIndex++;
+                    gp.keyH.enterPressed = false;
+                }
+            }
+        }
+        else { // If no text is in the array
+            npc.dialogueIndex = 0;
+            if(gp.gameState == gp.dialogueState) { // Needed because of the trade state
+                gp.gameState = gp.playState;
+            }
+            if(gp.gameState == gp.cutSceneState) { // after everything is said go to the next scene
+                gp.csManager.scenePhase++;
+            }
+        }
+
+        for(String line : currentDialogue.split("\n")) {
+            g2.drawString(line, x, y); // g2.drawString ignores '\n' by default
+            y += 40;
+        }
+
+
     }
 
     public void drawSubWindow(int x, int y, int width, int height) {
