@@ -24,6 +24,7 @@ public class NPC_OldMan extends Entity {
         dialogueSet = -1; // Cause we add one before the method is called, so this is so that we start from index 0
 
         getImage();
+        setDialogue();
     }
 
     public void getImage() {
@@ -36,6 +37,18 @@ public class NPC_OldMan extends Entity {
         left2 = setup("/npc/oldman_left_2", gp.tileSize, gp.tileSize);
         right1 = setup("/npc/oldman_right_1", gp.tileSize, gp.tileSize);
         right2 = setup("/npc/oldman_right_2", gp.tileSize, gp.tileSize);
+    }
+    public void setDialogue() {
+
+        dialogues[0][0] = "Hello, lad.";
+        dialogues[0][1] = "So you've come to this island to \nfind the treasure?";
+        dialogues[0][2] = "I used to be a great wizard but \nnow... I'm a bit too old for taking \nan adventure.";
+        dialogues[0][3] = "Well, good luck on you.";
+
+        dialogues[1][0] = "If you are tired rest at the water.";
+
+        dialogues[2][0] = "I wonder how to open thar door...";
+
     }
     
 }
