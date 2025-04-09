@@ -68,8 +68,15 @@ public class UI { // UI - User interface
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         g2.setColor(Color.white);
+    }
 
+    public void drawPauseScreen() {
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 80F));
+        String text = "PAUSED";
+        int x = getXForCenteredText(text);
+        int y = gp.screenHeight/2;
 
+        g2.drawString(text, x, y);
     }
 
 
