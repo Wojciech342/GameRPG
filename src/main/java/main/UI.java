@@ -67,7 +67,54 @@ public class UI { // UI - User interface
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         g2.setColor(Color.white);
+
+        // TITLE STATE
+        if(gp.gameState == gp.titleState) {
+            drawTitleScreen();
+        }
+        // PLAY STATE
+        else if(gp.gameState == gp.playState) {
+            drawPlayerLife();
+            drawMonsterLife();
+            drawMessage();
+        }
+        // PAUSE STATE
+        else if(gp.gameState == gp.pauseState) {
+            drawPlayerLife();
+            drawPauseScreen();
+        }
+        // DIALOGUE STATE
+        else if(gp.gameState == gp.dialogueState) {
+            drawDialogueScreen();
+        }
+        // CHARACTER STATE
+        if(gp.gameState == gp.characterState) {
+            drawCharacterScreen();
+            drawInventory(gp.player, true);
+        }
+        // OPTIONS STATE
+        if(gp.gameState == gp.optionsState) {
+            drawOptionsScreen();
+        }
+        // GAME OVER STATE
+        if(gp.gameState == gp.gameOverState) {
+            drawGameOverScreen();
+        }
+        // TRANSITION STATE
+        if(gp.gameState == gp.transitionState) {
+            drawTransition();
+        }
+        // TRADE STATE
+        if(gp.gameState == gp.tradeState) {
+            drawTradeScreen();
+        }
+        // SLEEP STATE
+        if(gp.gameState == gp.sleepState) {
+            drawSleepScreen();
+        }
     }
+
+
     public void drawPauseScreen() {
         g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 80F));
         String text = "PAUSED";
@@ -76,6 +123,7 @@ public class UI { // UI - User interface
 
         g2.drawString(text, x, y);
     }
+
     public void drawDialogueScreen() {
         // WINDOW
         int x = gp.tileSize*3;
@@ -89,10 +137,9 @@ public class UI { // UI - User interface
         y += gp.tileSize;
 
         if(npc.dialogues[npc.dialogueSet][npc.dialogueIndex] != null) {
-
             //currentDialogue = npc.dialogues[npc.dialogueSet][npc.dialogueIndex];
 
-            char characters[] = npc.dialogues[npc.dialogueSet][npc.dialogueIndex].toCharArray();
+            char[] characters = npc.dialogues[npc.dialogueSet][npc.dialogueIndex].toCharArray();
 
             if(charIndex < characters.length) {
 
@@ -104,13 +151,11 @@ public class UI { // UI - User interface
                 charIndex++;
             }
 
-            if(gp.keyH.enterPressed == true) {
-
+            if(gp.keyH.enterPressed) {
                 charIndex = 0;
                 combinedText = "";
 
                 if(gp.gameState == gp.dialogueState || gp.gameState == gp.cutSceneState) {
-
                     npc.dialogueIndex++;
                     gp.keyH.enterPressed = false;
                 }
@@ -130,8 +175,6 @@ public class UI { // UI - User interface
             g2.drawString(line, x, y); // g2.drawString ignores '\n' by default
             y += 40;
         }
-
-
     }
 
     public void drawSubWindow(int x, int y, int width, int height) {
