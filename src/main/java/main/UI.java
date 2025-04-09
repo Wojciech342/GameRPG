@@ -113,6 +113,82 @@ public class UI { // UI - User interface
             drawSleepScreen();
         }
     }
+    public void drawPlayerLife() {
+
+        int x = gp.tileSize/2;
+        int y = gp.tileSize/2;
+        int i = 0;
+        int iconSize = 32;
+        int manaStartX = (gp.tileSize/2) - 5;
+        int manaStartY = 0;
+
+        // DRAW MAX LIFE
+        while(i < gp.player.maxLife/2) {
+            g2.drawImage(heart_blank, x, y, iconSize, iconSize, null);
+            i++;
+            x += iconSize;
+            manaStartY = y + 32;
+
+            if(i % 8 == 0) {
+                x = gp.tileSize/2;
+                y += iconSize;
+            }
+        }
+
+        // RESET
+        x = gp.tileSize/2;
+        y = gp.tileSize/2;
+        i = 0;
+
+        // DRAW CURRENT HEART
+        while(i < gp.player.life) {
+            // So here the left half of the heart will be always drawn, and the full heart will be drawn on top if the life is there
+            g2.drawImage(heart_half, x, y, iconSize, iconSize, null);
+            i++;
+            if(i < gp.player.life) {
+                g2.drawImage(heart_full, x, y, iconSize, iconSize, null);
+            }
+            i++;
+            x += iconSize;
+
+            if(i % 16 == 0) {
+                x = gp.tileSize/2;
+                y += iconSize;
+            }
+        }
+
+        // DRAW MAX MANA
+        x = manaStartX;
+        y = manaStartY;
+        i = 0;
+        while(i < gp.player.maxMana) {
+            g2.drawImage(crystal_blank, x, y, iconSize, iconSize, null);
+            i++;
+            x += iconSize - 5;
+
+            if(i % 9 == 0) {
+                x = manaStartX;
+                y += iconSize;
+            }
+        }
+
+        // DRAW MANA
+        x = manaStartX;
+        y = manaStartY;
+        i = 0;
+        while(i < gp.player.mana) {
+            g2.drawImage(crystal_full, x, y, iconSize, iconSize, null);
+            i++;
+            x += iconSize - 5;
+
+            if(i % 9 == 0) {
+                x = manaStartX;
+                y += iconSize;
+            }
+        }
+    }
+
+
 
 
     public void drawPauseScreen() {
