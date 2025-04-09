@@ -50,5 +50,16 @@ public class NPC_OldMan extends Entity {
         dialogues[2][0] = "I wonder how to open thar door...";
 
     }
+
+    public void speak() {
+        facePlayer();
+        startDialogue(this, dialogueSet);
+
+        dialogueSet++;
+
+        if(dialogues[dialogueSet][0] == null) {
+            dialogueSet = 0;
+        }
+    }
     
 }
