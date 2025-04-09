@@ -231,7 +231,31 @@ public class UI { // UI - User interface
             }
         }
     }
+    public void drawMessage() {
+        int messageX = gp.tileSize/2 - 5;
+        int messageY = gp.tileSize*4;
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 24F));
 
+        for(int i = 0; i < message.size(); i++) {
+
+            if(message.get(i) != null) {
+
+                g2.setColor(Color.black);
+                g2.drawString(message.get(i), messageX+2, messageY+2);
+                g2.setColor(Color.white);
+                g2.drawString(message.get(i), messageX, messageY);
+
+                int counter = messageCounter.get(i) + 1; // messageCounter++
+                messageCounter.set(i, counter); // set the counter to the array
+                messageY += 40;
+
+                if(messageCounter.get(i) > 180) {
+                    message.remove(i);
+                    messageCounter.remove(i);
+                }
+            }
+        }
+    }
 
 
     public void drawPauseScreen() {
