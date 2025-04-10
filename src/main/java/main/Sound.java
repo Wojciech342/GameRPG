@@ -24,6 +24,7 @@ public class Sound {
             clip = AudioSystem.getClip();
             clip.open(ais);
             fc = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
+            checkVolume();
         }catch(Exception e) {
             e.printStackTrace();
         }
@@ -36,5 +37,18 @@ public class Sound {
     }
     public void stop() {
         clip.stop();
+    }
+    public void checkVolume() {
+        if(fc != null) {
+            switch(volumeScale) {
+                case 0: volume = -80f; break;
+                case 1: volume = -20f; break;
+                case 2: volume = -12f; break;
+                case 3: volume = -5f; break;
+                case 4: volume = 1f; break;
+                case 5: volume = 6f; break;
+            }
+            fc.setValue(volume);
+        }
     }
 }
