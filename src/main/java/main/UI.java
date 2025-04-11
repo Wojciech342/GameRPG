@@ -516,7 +516,123 @@ public class UI { // UI - User interface
         textY += gp.tileSize;
         g2.drawImage(gp.player.currentShield.down1, tailX - gp.tileSize + 3, textY-25, null);
     }
+    public void drawInventory(Entity entity, boolean cursor) {
+        int frameX;
+        int frameY;
+        int frameWidth;
+        int frameHeight;
+        int slotCol;
+        int slotRow;
+        if(entity == gp.player) {
+            frameX = gp.tileSize*12;
+            frameY = gp.tileSize;
+            frameWidth = gp.tileSize*6;
+            frameHeight = gp.tileSize*5;
+            slotCol = playerSlotCol;
+            slotRow = playerSlotRow;
+        }
+        else {
+            frameX = gp.tileSize*2;
+            frameY = gp.tileSize;
+            frameWidth = gp.tileSize*6;
+            frameHeight = gp.tileSize*5;
+            slotCol = npcSlotCol;
+            slotRow = npcSlotRow;
+        }
+        // FRAME
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
 
+        // SLOT
+        final int slotXStart = frameX + 20;
+        final int slotYStart = frameY + 20;
+        int slotX = slotXStart;
+        int slotY = slotYStart;
+        int slotSize = gp.tileSize + 3;
+
+        // DRAW ENTITIE'S ITEMS
+        for(int i = 0; i < entity.inventory.size(); i++) {
+
+            // EQUIP CURSOR
+            if(entity.inventory.get(i) == entity.currentWeapon ||
+               entity.inventory.get(i) == entity.currentShield ||
+               entity.inventory.get(i) == entity.currentLight) {
+                g2.setColor(new Color(240,190,90));
+                g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
+               }
+
+            g2.drawImage(entity.inventory.get(i).down1, slotX, slotY,null);
+
+            // DISPLAY AMOUNT
+            if(entity == gp.player && entity.inventory.get(i).amount > 1) {
+
+                g2.setFont(g2.getFont().deriveFont(26f));
+                int amountX;
+                int amountY;
+
+                String s = "" + entity.inventory.get(i).amount;
+                amountX = getXForAlignToRightText(s, slotX + 44);
+                amountY = slotY + gp.tileSize;
+
+                // SHADOW
+                g2.setColor(new Color(60,60,60));
+                g2.drawString(s, amountX, amountY);
+                // NUMBER
+                g2.setColor(Color.white);
+                g2.drawString(s, amountX-3, amountY-3);
+            }
+
+            slotX += slotSize;
+
+            if(i == 4 || i == 9 || i == 14) {
+                slotX = slotXStart;
+                slotY += slotSize;
+            }
+        }
+
+        // CURSOR
+        if(cursor == true) {
+            int cursorX = slotXStart + (slotSize * slotCol);
+            int cursorY = slotYStart + (slotSize * slotRow);
+            int cursorWidth = gp.tileSize;
+            int cursorHeight = gp.tileSize;
+
+            // DRAW CURSOR
+            g2.setColor(Color.white);
+            g2.setStroke(new BasicStroke(3));
+            g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
+
+            // DESCRIPTION PLAYER
+            int dFrameX = frameX;
+            int dFrameY = frameY + frameHeight;
+            int dFrameWidth = frameWidth;
+            int dFrameHeight = gp.tileSize*3;
+
+            // DRAW DESCRIPTION TEXT
+            int textX = dFrameX + 20;
+            int textY = dFrameY + gp.tileSize;
+            g2.setFont(g2.getFont().deriveFont(21F));
+
+            int itemIndex = getItemIndexOnSlot(slotCol, slotRow);
+
+            if(itemIndex < entity.inventory.size()) {
+
+                drawSubWindow(dFrameX, dFrameY, dFrameWidth, dFrameHeight);
+
+                for(String line : entity.inventory.get(itemIndex).description.split("\n")) {
+
+                    g2.drawString(line, textX, textY);
+                    textY += 32;
+                }
+            }
+        }
+
+    }
+
+    public int getItemIndexOnSlot(int slotCol, int slotRow) {
+
+        int itemIndex = slotCol + (slotRow*5);
+        return itemIndex;
+    }
     public void drawSubWindow(int x, int y, int width, int height) {
 
         Color c = new Color(0,0,0,210); // BLACK, transparency
