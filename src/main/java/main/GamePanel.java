@@ -104,7 +104,6 @@ public class GamePanel extends JPanel implements Runnable{
     public final int dungeon = 52;
 
     public GamePanel() {
-
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true); // Improve game rendering performance
@@ -113,7 +112,6 @@ public class GamePanel extends JPanel implements Runnable{
     }
 
     public void setupGame() {
-
         aSetter.setObject();
         aSetter.setNPC();
         aSetter.setMonster();
@@ -132,19 +130,8 @@ public class GamePanel extends JPanel implements Runnable{
         }
         
     }
-    public void setFullScreen() {
 
-        // GET LOCAL SCREEN DEVICE
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice gd = ge.getDefaultScreenDevice();
-        gd.setFullScreenWindow(Main.window);
-
-        // GET FULL SCREEN WIDTH AND HEIGHT
-        screenWidth2 = Main.window.getWidth();
-        screenHeight2 = Main.window.getHeight();
-    }
     public void resetGame(boolean restart) {
-        
         stopMusic();
         removeTempEntity();
         bossBattleOn = false;
@@ -162,51 +149,44 @@ public class GamePanel extends JPanel implements Runnable{
         }
        
     }
-    public void startGameThread() {
+    public void setFullScreen() {
+        // GET LOCAL SCREEN DEVICE
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice gd = ge.getDefaultScreenDevice();
+        gd.setFullScreenWindow(Main.window);
 
+        // GET FULL SCREEN WIDTH AND HEIGHT
+        screenWidth2 = Main.window.getWidth();
+        screenHeight2 = Main.window.getHeight();
+    }
+    public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
     }
-    // DELTA/ACCUMULATOR METHOD LOOP
+
     @Override
     public void run() {
-
         double drawInterval = 1000000000/FPS; // 0.01666 seconds
         double delta = 0;
         long lastTime = System.nanoTime();
         long currentTime;
-        // long timer = 0;
-        // int drawCount = 0;
 
         while(gameThread != null) {
-
             currentTime = System.nanoTime();
 
             delta += (currentTime - lastTime) / drawInterval;
-            // 60 times per second
-            //timer += (currentTime - lastTime);
             lastTime = currentTime;
     
             if(delta >= 1) {
-
                 update();
                 //repaint();
                 drawToTempScreen(); // draw everything to the buffered image
                 drawToScreen(); // draw the buffered image to the screen
                 delta--;
-                //drawCount++;
             }
-            /* 
-            if(timer >= 1000000000) {
-                System.out.println("FPS:" + drawCount);
-                drawCount = 0;
-                timer = 0;
-            }
-            */
         }
     }
     public void update() {
-        
         if(gameState == playState){
             // PLAYER
             player.update();
@@ -376,31 +356,25 @@ public class GamePanel extends JPanel implements Runnable{
         }
     }
     public void drawToScreen() {
-
         Graphics g = getGraphics();
         g.drawImage(tempScreen, 0, 0, screenWidth2, screenHeight2, null);
         g.dispose();
     }
     public void playMusic(int i) {
-
         music.setFile(i);
         music.play();
         music.loop();
     }
     public void stopMusic() {
-
         music.stop();
     }
     
     public void playSE(int i) { // SE - sound effect
-
         se.setFile(i);
         se.play();
     }
     public void changeArea() {
-
         if(nextArea != currentArea) {
-
             stopMusic();
 
             if(nextArea == outside) {
@@ -420,9 +394,7 @@ public class GamePanel extends JPanel implements Runnable{
         //aSetter.setMonster();
     }
     public void removeTempEntity() {
-
         for(int mapNum = 0; mapNum < maxMap; mapNum++) {
-
             for(int i = 0; i < obj[1].length; i++) {
                 if(obj[mapNum][i] != null && obj[mapNum][i].temp == true) {
                     obj[mapNum][i] = null;
@@ -430,46 +402,4 @@ public class GamePanel extends JPanel implements Runnable{
             }
         }
     }
-
 }
-
-
-
-
-
-
-
-// SLEEP METHOD LOOP 
-    /* 
-    @Override
-    public void run() {
-        double drawInterval = 1000000000/FPS; // 0.01666 seconds
-        double nextDrawTime = System.nanoTime() + drawInterval;
-        
-        while(gameThread != null) {
-
-            // 1 UPDATE: update information such as character positions
-            update();
-
-            // 2 DRAW: draw the screen with the updated information 
-            repaint(); // paintComponent() method
-
-            try {
-                double remainingTime = nextDrawTime - System.nanoTime();
-                remainingTime = remainingTime/1000000; // From nanoseconds to milliseconds
-
-                if(remainingTime < 0) {
-                    // shouldn't happen in out little 2D game, but just in case, it is good practice
-                    remainingTime = 0;
-                }
-
-                Thread.sleep((long)remainingTime);
-
-                nextDrawTime += drawInterval;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        
-    }
-    */
