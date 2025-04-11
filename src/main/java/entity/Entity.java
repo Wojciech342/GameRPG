@@ -222,6 +222,22 @@ public class Entity {
             }
         }
     }
+    public void generateParticle(Entity generator, Entity target) {
+
+        Color color = generator.getParticleColor();
+        int size = generator.getParticleSize();
+        int speed = generator.getParticleSpeed();
+        int maxLife = generator.getParticleMaxLife();
+
+        Particle p1 = new Particle(gp, target, color, size, speed, maxLife, -2, -1); // left = -
+        Particle p2 = new Particle(gp, target, color, size, speed, maxLife, 2, -1);// right = +
+        Particle p3 = new Particle(gp, target, color, size, speed, maxLife, -2, 1);// top = -
+        Particle p4 = new Particle(gp, target, color, size, speed, maxLife, 2, 1);// bottom = +
+        gp.particleList.add(p1);
+        gp.particleList.add(p2);
+        gp.particleList.add(p3);
+        gp.particleList.add(p4);
+    }
     public Color getParticleColor() {
         Color color = null;
         return color;
@@ -238,22 +254,7 @@ public class Entity {
         int maxLife = 0;
         return maxLife;
     }
-    public void generateParticle(Entity generator, Entity target) {
 
-        Color color = generator.getParticleColor();
-        int size = generator.getParticleSize();
-        int speed = generator.getParticleSpeed();
-        int maxLife = generator.getParticleMaxLife();
-
-        Particle p1 = new Particle(gp, target, color, size, speed, maxLife, -2, -1); // left = -
-        Particle p2 = new Particle(gp, target, color, size, speed, maxLife, 2, -1);// right = +
-        Particle p3 = new Particle(gp, target, color, size, speed, maxLife, -2, 1);// top = - 
-        Particle p4 = new Particle(gp, target, color, size, speed, maxLife, 2, 1);// bottom = +
-        gp.particleList.add(p1);
-        gp.particleList.add(p2);
-        gp.particleList.add(p3);
-        gp.particleList.add(p4);
-    }
     public void checkCollision() {
 
         collisionOn = false;
