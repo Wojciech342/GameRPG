@@ -4,7 +4,6 @@ import data.Progress;
 import entity.Entity;
 
 public class EventHandler {
-    
     GamePanel gp;
     EventRect[][][] eventRect;
     Entity eventMaster;
@@ -17,7 +16,6 @@ public class EventHandler {
         this.gp = gp;
 
         eventMaster = new Entity(gp);
-
         eventRect = new EventRect[gp.maxMap][gp.maxWorldCol][gp.maxWorldRow];
 
         int map = 0;
@@ -44,7 +42,6 @@ public class EventHandler {
                 }
             }
         }
-
         setDialogue();
     }
 
@@ -101,15 +98,6 @@ public class EventHandler {
 
         return hit;
     }
-    public void teleport(int map, int col, int row, int area) {
-        gp.gameState = gp.transitionState;
-        gp.nextArea = area;
-        tempMap = map;
-        tempCol = col;
-        tempRow = row;
-        canTouchEvent = false;
-        gp.playSE(13);
-    }
     public void damagePit(int gameState) {
         gp.gameState = gameState;
         gp.playSE(6);
@@ -128,6 +116,15 @@ public class EventHandler {
             gp.aSetter.setMonster();
             gp.saveLoad.save();
         }
+    }
+    public void teleport(int map, int col, int row, int area) {
+        gp.gameState = gp.transitionState;
+        gp.nextArea = area;
+        tempMap = map;
+        tempCol = col;
+        tempRow = row;
+        canTouchEvent = false;
+        gp.playSE(13);
     }
     public void speak(Entity entity) {
         if(gp.keyH.enterPressed) {
