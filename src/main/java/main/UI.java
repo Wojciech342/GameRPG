@@ -666,6 +666,23 @@ public class UI { // UI - User interface
             g2.drawString(">", x-40, y);
         }
     }
+    public void drawTransition() {
+        counter++;
+        g2.setColor(new Color(0,0,0,counter*5));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        if(counter == 50) { // The transition is done
+            counter = 0;
+            gp.gameState = gp.playState;
+            gp.currentMap = gp.eHandler.tempMap;
+            gp.player.worldX = gp.eHandler.tempCol * gp.tileSize;
+            gp.player.worldY = gp.eHandler.tempRow * gp.tileSize;
+            gp.eHandler.previousEventX = gp.player.worldX;
+            gp.eHandler.previousEventY = gp.player.worldY;
+            gp.changeArea();
+        }
+
+    }
 
     public int getItemIndexOnSlot(int slotCol, int slotRow) {
 
