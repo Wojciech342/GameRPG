@@ -107,7 +107,17 @@ public class AssetSetter {
         int mapNum = 0;
         int i = 0;
         gp.npc[mapNum][i] = new NPC_OldMan(gp);
-        gp.npc[mapNum][i].worldX = gp.tileSize*21;
-        gp.npc[mapNum][i].worldY = gp.tileSize*21;
-        }
+        gp.npc[mapNum][i].worldX = gp.tileSize * 21;
+        gp.npc[mapNum][i].worldY = gp.tileSize * 21;
+        i++;
+
+        // MAP 1
+        mapNum = 1;
+        i = 0;
+        gp.npc[mapNum][i] = new NPC_Merchant(gp);
+        gp.npc[mapNum][i].worldX = gp.tileSize * 12;
+        gp.npc[mapNum][i].worldY = gp.tileSize * 7;
+        i++;
+
+    }
 }
