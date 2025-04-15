@@ -1052,7 +1052,46 @@ public class UI { // UI - User interface
             }
         }
     }
+    public void options_endGameConfirmation(int frameX, int frameY) {
 
+        int textX = frameX + gp.tileSize;
+        int textY = frameY + gp.tileSize*3;
+
+        currentDialogue = "Quit the game and \nreturn to the \ntile screen?";
+
+        for(String line : currentDialogue.split("\n")) {
+            g2.drawString(line, textX, textY);
+            textY += 40;
+        }
+
+        // YES
+        String text = "Yes";
+        textX = getXForCenteredText(text);
+        textY += gp.tileSize;
+        g2.drawString(text, textX, textY);
+        if(commandNum == 0) {
+            g2.drawString(">", textX-25, textY);
+            if(gp.keyHandler.enterPressed == true) {
+                subState = 0;
+                commandNum = 0;
+                gp.gameState = gp.titleState;
+                gp.resetGame(true);
+            }
+        }
+
+        // NO
+        text = "No";
+        textX = getXForCenteredText(text);
+        textY += gp.tileSize;
+        g2.drawString(text, textX, textY);
+        if(commandNum == 1) {
+            g2.drawString(">", textX-25, textY);
+            if(gp.keyHandler.enterPressed == true) {
+                subState = 0;
+                commandNum = 4;
+            }
+        }
+    }
     public int getItemIndexOnSlot(int slotCol, int slotRow) {
         int itemIndex = slotCol + (slotRow*5);
         return itemIndex;
