@@ -5,7 +5,7 @@ import java.awt.event.*;
 public class KeyHandler implements KeyListener{
 
     GamePanel gp;
-    public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed, shotKeyPressed, spacePressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed, shotKeyPressed, guardUp;
     //DEBUG
     boolean showDebugText = false;
     public boolean godModeOn = false;
@@ -144,6 +144,9 @@ public class KeyHandler implements KeyListener{
         if(code == KeyEvent.VK_F) {
             shotKeyPressed = true;
         }
+        if(code == KeyEvent.VK_SPACE) {
+            guardUp = true;
+        }
         if(code == KeyEvent.VK_ESCAPE) {
             gp.gameState = gp.optionsState;
         }
@@ -153,18 +156,11 @@ public class KeyHandler implements KeyListener{
         if(code == KeyEvent.VK_M) {
             gp.gameState = gp.mapState;
         }
-        if(code == KeyEvent.VK_SPACE) {
-            spacePressed = true;
-        }
+
         
         // DEBUG
         if(code == KeyEvent.VK_T) {
-            if(showDebugText == false) {
-                showDebugText = true;
-            }
-            else if(showDebugText == true) {
-                showDebugText = false;
-            }
+            showDebugText = !showDebugText;
         }
         if(code == KeyEvent.VK_R) { // DEBUG, loading changed map when you are already in game
             switch(gp.currentMap) {
@@ -173,10 +169,10 @@ public class KeyHandler implements KeyListener{
             }  
         }
         if(code == KeyEvent.VK_G) {
-            if(godModeOn == false) {
+            if(!godModeOn) {
                 godModeOn = true;
             }
-            else if(godModeOn == true) {
+            else if(godModeOn) {
                 godModeOn = false;
             }
         }
@@ -415,7 +411,7 @@ public class KeyHandler implements KeyListener{
             enterPressed = false;
         }
         if(code == KeyEvent.VK_SPACE) {
-            spacePressed = false;
+            guardUp = false;
         }
     }
     
