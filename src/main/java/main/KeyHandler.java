@@ -177,8 +177,8 @@ public class KeyHandler implements KeyListener{
         }
         if(code == KeyEvent.VK_R) { // DEBUG, loading changed map when you are already in game
             switch(gp.currentMap) {
-            case 0: gp.tileM.loadMap("/maps/worldV3.txt", 0);
-            case 1: gp.tileM.loadMap("/maps/interior.txt", 1);
+            case 0: gp.tileManager.loadMap("/maps/worldV3.txt", 0);
+            case 1: gp.tileManager.loadMap("/maps/interior.txt", 1);
             }  
         }
         if(code == KeyEvent.VK_G) {
@@ -296,9 +296,13 @@ public class KeyHandler implements KeyListener{
             }
         }
     }
+    public void mapState(int code) {
 
+        if(code == KeyEvent.VK_M) {
+            gp.gameState = gp.playState;
+        }
+    }
     public void tradeState(int code) {
-
         if(code == KeyEvent.VK_ENTER) {
             enterPressed = true;
         }
@@ -330,12 +334,6 @@ public class KeyHandler implements KeyListener{
             if(code == KeyEvent.VK_ESCAPE) {
                 gp.ui.subState = 0;
             }
-        }
-    }
-    public void mapState(int code) {
-
-        if(code == KeyEvent.VK_M) {
-            gp.gameState = gp.playState;
         }
     }
     public void playerInventory(int code) {
