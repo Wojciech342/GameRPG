@@ -67,7 +67,7 @@ public class AssetSetter {
         placeEntity(new NPC_BigRock(gp), 11, 18, gp.npcs);
         placeEntity(new NPC_BigRock(gp), 23, 14, gp.npcs);
     }
-    public void placeMonsterOnMap() {
+    public void placeMonstersOnMap() {
         mapNum = 0;
         placeEntity(new MON_GreenSlime(gp), 21, 38, gp.monsters);
         placeEntity(new MON_GreenSlime(gp), 21, 39, gp.monsters);
@@ -84,9 +84,9 @@ public class AssetSetter {
         placeEntity(new MON_Orc(gp), 12, 33, gp.monsters);
 
         mapNum = 2;
-        placeEntity(new MON_Bat(gp), 34, 39, gp.monsters);
-        placeEntity(new MON_Bat(gp), 36, 25, gp.monsters);
         placeEntity(new MON_Bat(gp), 39, 26, gp.monsters);
+        placeEntity(new MON_Bat(gp), 36, 25, gp.monsters);
+        placeEntity(new MON_Bat(gp), 34, 39, gp.monsters);
 
         mapNum = 3;
         if (!Progress.skeletonLordDefeated) {
@@ -149,8 +149,8 @@ public class AssetSetter {
         Entity[] entities = entityArray[mapNum];
         for (int i = 0; i < entities.length; i++) {
             if (entities[i] == null) {
-                entities[i] = entity;
                 entity.setPosition(col, row);
+                entities[i] = entity;
                 break;
             }
         }
