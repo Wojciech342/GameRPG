@@ -114,7 +114,6 @@ public class GamePanel extends JPanel implements Runnable{
         assetSetter.placeMonstersOnMap();
         assetSetter.setInteractiveTile();
         environmentManager.setup();
-        playMusic(0);
 
         gameState = titleState;
         currentArea = outside;
@@ -122,7 +121,7 @@ public class GamePanel extends JPanel implements Runnable{
         tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
         g2 = (Graphics2D)tempScreen.getGraphics();
 
-        if(fullScreenOn == true) {
+        if(fullScreenOn) {
             setFullScreen();
         }
         
@@ -137,7 +136,7 @@ public class GamePanel extends JPanel implements Runnable{
         assetSetter.placeNPCsOnMap();
         assetSetter.placeMonstersOnMap();
 
-        if(restart == true) {
+        if(restart) {
             player.setDefaultValues();
             assetSetter.placeObjectsOnMap();
             assetSetter.setInteractiveTile();
@@ -194,10 +193,10 @@ public class GamePanel extends JPanel implements Runnable{
             // MONSTER
             for(int i = 0; i < monsters[1].length; i++) {
                 if(monsters[currentMap][i] != null) {
-                    if(monsters[currentMap][i].alive == true && monsters[currentMap][i].dying == false) {
+                    if(monsters[currentMap][i].alive && !monsters[currentMap][i].dying) {
                         monsters[currentMap][i].update();
                     }
-                    if(monsters[currentMap][i].alive == false) {
+                    if(!monsters[currentMap][i].alive) {
                         monsters[currentMap][i].checkDrop();
                         monsters[currentMap][i] = null;
                     }
@@ -206,10 +205,10 @@ public class GamePanel extends JPanel implements Runnable{
             // PROJECTILE
             for(int i = 0; i < projectiles[1].length; i++) {
                 if(projectiles[currentMap][i] != null) {
-                    if(projectiles[currentMap][i].alive == true) {
+                    if(projectiles[currentMap][i].alive) {
                         projectiles[currentMap][i].update();
                     }
-                    else if(projectiles[currentMap][i].alive == false) {
+                    else if(!projectiles[currentMap][i].alive) {
                         projectiles[currentMap][i] = null;
                     }
                 }
@@ -217,10 +216,10 @@ public class GamePanel extends JPanel implements Runnable{
             // PARTICLE
             for(int i = 0; i < particles.size(); i++) {
                 if(particles.get(i) != null) {
-                    if(particles.get(i).alive == true) {
+                    if(particles.get(i).alive) {
                         particles.get(i).update();
                     }
-                    else if(particles.get(i).alive == false) {
+                    else if(!particles.get(i).alive) {
                         particles.remove(i);
                     }
                 }
@@ -240,7 +239,7 @@ public class GamePanel extends JPanel implements Runnable{
     public void drawToTempScreen() {
         // DEBUG
         long drawStart = 0;
-        if(keyHandler.showDebugText == true) {
+        if(keyHandler.showDebugText) {
             drawStart = System.nanoTime();
         }
 
@@ -390,7 +389,7 @@ public class GamePanel extends JPanel implements Runnable{
     public void removeTempEntity() {
         for(int mapNum = 0; mapNum < maxMap; mapNum++) {
             for(int i = 0; i < objects[1].length; i++) {
-                if(objects[mapNum][i] != null && objects[mapNum][i].temp == true) {
+                if(objects[mapNum][i] != null && objects[mapNum][i].temp) {
                     objects[mapNum][i] = null;
                 }
             }
