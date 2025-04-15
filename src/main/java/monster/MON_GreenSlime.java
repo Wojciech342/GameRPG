@@ -51,10 +51,14 @@ public class MON_GreenSlime extends Entity {
         right1 = setup("/monster/greenslime_down_1", gp.tileSize, gp.tileSize);
         right2 = setup("/monster/greenslime_down_2", gp.tileSize, gp.tileSize);
     }
-    public void setAction() {
-        
-        if(onPath == true) {
 
+    public void damageReaction(){
+
+        actionLockCounter = 0;
+        onPath = true;
+    }
+    public void setAction() {
+        if(onPath) {
             // Check if it stops chasing
             checkStopChasing(gp.player, 8, 100);
 
@@ -69,13 +73,7 @@ public class MON_GreenSlime extends Entity {
             getRandomDirection(120);
         }
     }
-    public void damageReaction(){
-
-        actionLockCounter = 0;
-        onPath = true;
-    }
     public void checkDrop() {
-
         // CAST A DIE
         int i = new Random().nextInt(100) + 1;
 
