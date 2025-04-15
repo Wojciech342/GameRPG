@@ -10,14 +10,13 @@ public class InteractiveTile extends Entity {
     GamePanel gp;
     public boolean destructible = false;
 
-    public InteractiveTile(GamePanel gp, int col, int row) {
+    public InteractiveTile(GamePanel gp) {
         super(gp);
         this.gp = gp;
     }
 
-    public boolean isCorrectItem(Entity entity) {
-        boolean isCorrectItem = false;
-        return isCorrectItem;
+    public boolean canBeDamaged(Entity entity) {
+        return false;
     }
     public void playSE() {}
 
@@ -26,8 +25,7 @@ public class InteractiveTile extends Entity {
         return tile;
     }
     public void update() {
-
-        if(invincible == true) {
+        if(invincible) {
             invincibleCounter++;
             if(invincibleCounter > 20) {
                 invincible = false;
@@ -37,7 +35,6 @@ public class InteractiveTile extends Entity {
     }
     @Override
     public void draw(Graphics2D g2) { // Removing half transparent effect, method can be removed if you want the transparency while tree is invincible
-
         // worldX, worldY are what matters here it is coordinates of the object
         int screenX = worldX - gp.player.worldX + gp.player.screenX; // gp.player.screenX is final, always will be screenWidth/2
         int screenY = worldY - gp.player.worldY + gp.player.screenY; // gp.player.worldX is changing depending on the whole map

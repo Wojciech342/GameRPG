@@ -9,12 +9,9 @@ public class IT_DryTree extends InteractiveTile{
 
     GamePanel gp;
 
-    public IT_DryTree(GamePanel gp,  int col, int row) {
-        super(gp, col, row);
+    public IT_DryTree(GamePanel gp) {
+        super(gp);
         this.gp = gp;
-
-        this.worldX = gp.tileSize*col;
-        this.worldY = gp.tileSize*row;
         
         down1 = setup("/tiles_interactive/drytree", gp.tileSize, gp.tileSize);
         destructible = true;
@@ -22,21 +19,17 @@ public class IT_DryTree extends InteractiveTile{
 
     }
     @Override
-    public boolean isCorrectItem(Entity entity) {
-        boolean isCorrectItem = false;
-
-        if(entity.currentWeapon.type == type_axe) {
-            isCorrectItem = true;
-        }
-        return isCorrectItem;
+    public boolean canBeDamaged(Entity entity) {
+        return entity.currentWeapon.type == type_axe;
     }
     public void playSE() {
         gp.playSE(11);
     }
     
     public InteractiveTile getDestroyedForm() {
-        InteractiveTile tile = new IT_Trunk(gp, worldX/gp.tileSize, worldY/gp.tileSize);
-        return tile;
+        InteractiveTile trunk = new IT_Trunk(gp);
+        trunk.setPosition(worldX/gp.tileSize, worldY/gp.tileSize);
+        return trunk;
     }
     public Color getParticleColor() {
         Color color = new Color(65,50,30);

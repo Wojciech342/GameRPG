@@ -5,28 +5,21 @@ import java.awt.Color;
 import entity.Entity;
 import main.GamePanel;
 
-public class IT_DestructibleWall extends InteractiveTile{
+public class IT_DestructibleWall extends InteractiveTile {
 
     GamePanel gp;
 
-    public IT_DestructibleWall (GamePanel gp,  int col, int row) {
-        super(gp, col, row);
+    public IT_DestructibleWall (GamePanel gp) {
+        super(gp);
         this.gp = gp;
 
-        this.worldX = gp.tileSize*col;
-        this.worldY = gp.tileSize*row;
         down1 = setup("/tiles_interactive/destructiblewall", gp.tileSize, gp.tileSize);
         destructible = true;
         life = 3;
-
     }
     @Override
-    public boolean isCorrectItem(Entity entity) {
-        boolean isCorrectItem = false;
-        if(entity.currentWeapon.type == type_pickaxe) {
-            isCorrectItem = true;
-        }
-        return isCorrectItem;
+    public boolean canBeDamaged(Entity entity) {
+        return entity.currentWeapon.type == type_pickaxe;
     }
     public void playSE() {
         gp.playSE(20);
@@ -52,20 +45,5 @@ public class IT_DestructibleWall extends InteractiveTile{
         int maxLife = 20;
         return maxLife;
     }
-    // public void checkDrop() {
 
-    //     // CAST A DIE
-    //     int i = new Random().nextInt(100) + 1;
-
-    //     // SET THE MONSTER DROP
-    //     if(i < 50) {
-    //         dropItem(new OBJ_Coin_Bronze(gp));
-    //     }
-    //     else if(i >= 50 && i < 75) {
-    //         dropItem(new OBJ_Heart(gp));
-    //     }
-    //     else if(i > 75 && i < 100) {
-    //         dropItem(new OBJ_ManaCrystal(gp));
-    //     }
-    // }
 }

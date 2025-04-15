@@ -7,12 +7,9 @@ public class IT_MetalPlate extends InteractiveTile {
     GamePanel gp;
     public static final String itName = "Metal Plate";
 
-    public IT_MetalPlate(GamePanel gp, int col, int row) {
-        super(gp, col, row);
+    public IT_MetalPlate(GamePanel gp) {
+        super(gp);
         this.gp = gp;
-
-        this.worldX = gp.tileSize*col;
-        this.worldY = gp.tileSize*row;
 
         name = itName;
         down1 = setup("/tiles_interactive/metalplate", gp.tileSize, gp.tileSize);
