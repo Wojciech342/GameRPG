@@ -26,7 +26,6 @@ public class NPC_OldMan extends Entity {
         getImage();
         setDialogue();
     }
-
     public void getImage() {
 
         up1 = setup("/npc/oldman_up_1", gp.tileSize, gp.tileSize);
@@ -38,6 +37,33 @@ public class NPC_OldMan extends Entity {
         right1 = setup("/npc/oldman_right_1", gp.tileSize, gp.tileSize);
         right2 = setup("/npc/oldman_right_2", gp.tileSize, gp.tileSize);
     }
+    public void setAction() {
+        if (onPath) {
+            int goalCol = (gp.player.worldX + gp.player.solidArea.x) / gp.tileSize;
+            int goalRow = (gp.player.worldY + gp.player.solidArea.y) / gp.tileSize;
+
+            searchPath(goalCol, goalRow);
+        } else {
+            actionLockCounter++;
+
+            if (actionLockCounter == 180) {
+                Random random = new Random();
+                int i = random.nextInt(100) + 1;// pick up a number from 1 to 100
+
+                if (i <= 25) {
+                    direction = "up";
+                } else if (i > 25 && i <= 50) {
+                    direction = "down";
+                } else if (i > 50 && i <= 75) {
+                    direction = "left";
+                } else if (i > 75 && i <= 100) {
+                    direction = "right";
+                }
+
+                actionLockCounter = 0;
+            }
+        }
+    }
     public void setDialogue() {
 
         dialogues[0][0] = "Hello, lad.";
@@ -48,38 +74,6 @@ public class NPC_OldMan extends Entity {
         dialogues[1][0] = "If you are tired rest at the water.";
 
         dialogues[2][0] = "I wonder how to open thar door...";
-
-    }
-    public void setAction() {
-        if(onPath) {
-            int goalCol = (gp.player.worldX + gp.player.solidArea.x)/gp.tileSize;
-            int goalRow = (gp.player.worldY + gp.player.solidArea.y)/gp.tileSize;
-
-            searchPath(goalCol, goalRow);
-        }
-        else {
-            actionLockCounter++;
-
-            if(actionLockCounter == 180) {
-                Random random = new Random();
-                int i = random.nextInt(100) + 1;// pick up a number from 1 to 100
-
-                if(i <= 25) {
-                    direction = "up";
-                }
-                else if(i > 25 && i <= 50) {
-                    direction = "down";
-                }
-                else if(i > 50 && i <= 75) {
-                    direction = "left";
-                }
-                else if(i > 75 && i <=100) {
-                    direction = "right";
-                }
-
-                actionLockCounter = 0;
-            }
-        }
 
     }
     public void speak() {
