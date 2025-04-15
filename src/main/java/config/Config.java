@@ -3,7 +3,6 @@ package main;
 import java.io.*;
 
 public class Config {
-    
     GamePanel gp;
     private final String configPath = "config.txt";
 
@@ -11,13 +10,12 @@ public class Config {
         this.gp = gp;
     }
     public void saveConfig() {
-
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(configPath));
 
             // Full screen 
-            if(gp.fullScreenOn == true) {bw.write("On");}
-            if(gp.fullScreenOn == false) {bw.write("Off");}
+            if(gp.fullScreenOn) {bw.write("On");}
+            else {bw.write("Off");}
             bw.newLine();
 
             // Music volume
@@ -34,7 +32,6 @@ public class Config {
         }
     }
     public void loadConfig() {
-
         try {
             BufferedReader br = new BufferedReader(new FileReader(configPath));
 
