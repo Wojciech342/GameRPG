@@ -64,12 +64,14 @@ public class KeyHandler implements KeyListener{
         if(gp.ui.titleScreenState == 0) {
             if(code == KeyEvent.VK_W) {
                 gp.ui.commandNum--;
+                gp.playSE(9);
                 if(gp.ui.commandNum < 0) {
                     gp.ui.commandNum = 2;
                 }
             }
             if(code == KeyEvent.VK_S) {
                 gp.ui.commandNum++;
+                gp.playSE(9);
                 if(gp.ui.commandNum > 2) {
                     gp.ui.commandNum = 0;
                 }
@@ -81,7 +83,7 @@ public class KeyHandler implements KeyListener{
                 if(gp.ui.commandNum == 1) {
                     gp.saveLoad.load();
                     gp.gameState = gp.playState;
-                    
+                    gp.playMusic(0);
                 }
                 if(gp.ui.commandNum == 2) {
                     System.exit(0);
@@ -91,26 +93,22 @@ public class KeyHandler implements KeyListener{
         else if(gp.ui.titleScreenState == 1) {
             if(code == KeyEvent.VK_W) {
                 gp.ui.commandNum--;
+                gp.playSE(9);
                 if(gp.ui.commandNum < 0) {
                     gp.ui.commandNum = 3;
                 }
             }
             if(code == KeyEvent.VK_S) {
                 gp.ui.commandNum++;
+                gp.playSE(9);
                 if(gp.ui.commandNum > 3) {
                     gp.ui.commandNum = 0;
                 }
             }
             if(code == KeyEvent.VK_ENTER) {
-                if(gp.ui.commandNum == 0) {
+                if(gp.ui.commandNum == 0 || gp.ui.commandNum == 1|| gp.ui.commandNum == 2) {
                     gp.gameState = gp.playState;
-                    
-                }
-                if(gp.ui.commandNum == 1) {
-                    gp.gameState = gp.playState;
-                }
-                if(gp.ui.commandNum == 2) {
-                    gp.gameState = gp.playState;
+                    gp.playMusic(0);
                 }
                 if(gp.ui.commandNum == 3) {
                     gp.ui.titleScreenState = 0;
