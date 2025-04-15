@@ -11,7 +11,7 @@ public class Main {
         window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
-        window.setTitle("Blue Boy Adventure");
+        window.setTitle("RPG GAME");
         new Main().setIcon();
 
         GamePanel gamePanel = new GamePanel();
