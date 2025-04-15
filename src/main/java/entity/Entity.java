@@ -124,7 +124,7 @@ public class Entity {
 
     public void setPosition(int col, int row) {
         this.worldX = gp.tileSize * col;
-        this.worldY = row;
+        this.worldY = gp.tileSize * row;
     }
     public int getScreenX() {
         int screenX = worldX - gp.player.worldX + gp.player.screenX;
@@ -261,12 +261,12 @@ public class Entity {
     public void checkCollision() {
 
         collisionOn = false;
-        gp.cChecker.checkTile(this);
-        gp.cChecker.checkObject(this, false); // not player so false
-        gp.cChecker.checkEntity(this, gp.npcs);
-        gp.cChecker.checkEntity(this, gp.monsters);
-        gp.cChecker.checkEntity(this, gp.interactiveTiles);
-        boolean contactPlayer = gp.cChecker.checkPlayer(this);
+        gp.collisionChecker.checkTile(this);
+        gp.collisionChecker.checkObject(this, false); // not player so false
+        gp.collisionChecker.checkEntity(this, gp.npcs);
+        gp.collisionChecker.checkEntity(this, gp.monsters);
+        gp.collisionChecker.checkEntity(this, gp.interactiveTiles);
+        boolean contactPlayer = gp.collisionChecker.checkPlayer(this);
 
         if(this.type == type_monster && contactPlayer == true) {
             damagePlayer(attack);
@@ -496,19 +496,19 @@ public class Entity {
             solidArea.height = attackArea.height;
 
             if(type == type_monster) {
-                if(gp.cChecker.checkPlayer(this) == true) {
+                if(gp.collisionChecker.checkPlayer(this) == true) {
                     damagePlayer(attack);
                 }
             }
             else { // Player
                 // Check monster collision with the updated worldX, worldY and solidArea
-                int monsterIndex = gp.cChecker.checkEntity(this, gp.monsters);
+                int monsterIndex = gp.collisionChecker.checkEntity(this, gp.monsters);
                 gp.player.damageMonster(monsterIndex, this, attack, currentWeapon.knockBackPower);
 
-                int iTileIndex = gp.cChecker.checkEntity(this, gp.interactiveTiles);
+                int iTileIndex = gp.collisionChecker.checkEntity(this, gp.interactiveTiles);
                 gp.player.damageInteractiveTile(iTileIndex);
 
-                int projectileIndex = gp.cChecker.checkEntity(this, gp.projectiles);
+                int projectileIndex = gp.collisionChecker.checkEntity(this, gp.projectiles);
                 gp.player.damageProjectile(projectileIndex); 
             }
             // After checking collision, restore the original idea
@@ -523,16 +523,20 @@ public class Entity {
             attacking = false;
         }
     }
+    public void setKnockBack(Entity target, Entity attacker, int knockBackPower) {
+        this.attacker = attacker;
+        target.knockBackDirection = attacker.direction;
+        target.speed += knockBackPower;
+        target.knockBack = true;
+    }
     public void damagePlayer(int attack) {
         if(!gp.player.invincible) {
-
             int damage = attack - gp.player.defense;
 
             // Get an opposite direction of this attacker
             String canGuardDirection = getOppositeDirection(direction);
 
             if(gp.player.guarding && gp.player.direction.equals(canGuardDirection)) {
-
                 // Parry
                 if(gp.player.guardCounter < 20) { // Parry if you press the block less than 20 frames before the attack
                     damage = 0;
@@ -545,10 +549,9 @@ public class Entity {
                 else {
                     damage /= 3;
                     gp.playSE(15);
-                }  
+                }
             }
             else {
-                // Not guarding
                 gp.playSE(6);
                 if(damage < 1) {
                     damage = 1;
@@ -561,12 +564,6 @@ public class Entity {
             gp.player.life -= damage;
             gp.player.invincible = true;
         }
-    }
-    public void setKnockBack(Entity target, Entity attacker, int knockBackPower) {
-        this.attacker = attacker;
-        target.knockBackDirection = attacker.direction;
-        target.speed += knockBackPower;
-        target.knockBack = true;
     }
     public boolean inCamera() {
         boolean inCamera = false;
@@ -709,12 +706,12 @@ public class Entity {
         int startCol = (worldX + solidArea.x)/gp.tileSize;
         int startRow = (worldY + solidArea.y)/gp.tileSize;
 
-        gp.pFinder.setNodes(startCol, startRow, goalCol, goalRow);
+        gp.pathFinder.setNodes(startCol, startRow, goalCol, goalRow);
 
-        if(gp.pFinder.search()) {
+        if(gp.pathFinder.search()) {
             // Next worldX & worldY
-            int nextX = gp.pFinder.pathList.getFirst().col * gp.tileSize;
-            int nextY = gp.pFinder.pathList.getFirst().row * gp.tileSize;
+            int nextX = gp.pathFinder.pathList.getFirst().col * gp.tileSize;
+            int nextY = gp.pathFinder.pathList.getFirst().row * gp.tileSize;
 
             // Entity's solidArea position
             int enLeftX = worldX + solidArea.x;
