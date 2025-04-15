@@ -214,6 +214,7 @@ public class Player extends Entity {
         guardLeft = setup("/player/boy_guard_left", gp.tileSize, gp.tileSize);
         guardRight = setup("/player/boy_guard_right", gp.tileSize, gp.tileSize);
     }
+
     public void update() {
         if(knockBack) {
             collisionOn = false; // // collisionOn is changed in the checkTile method if there is a collision
@@ -393,37 +394,7 @@ public class Player extends Entity {
             gp.npcs[gp.currentMap][i].move(direction);
         }
     }
-    public void pickUpObject(int i) {
-        if(i != 999) {
-            // PICKUP ONLY ITEMS
-            if(gp.objects[gp.currentMap][i].type == type_pickUpOnly) {
-                gp.objects[gp.currentMap][i].use(this);
-                gp.objects[gp.currentMap][i] = null;
-            }
 
-            else if(gp.objects[gp.currentMap][i].type == type_obstacle) {
-                if(keyH.enterPressed) {
-                    attackCancelled = true;
-                    gp.objects[gp.currentMap][i].interact();
-                }
-            }
-
-            // INVENTORY ITEMS
-            else{
-                String text;
-
-                if(canObtainItem(gp.objects[gp.currentMap][i])) {
-                    gp.playSE(1);
-                    text = "Got a " + gp.objects[gp.currentMap][i].name;
-                }
-                else {
-                    text = "Your inventory is full";
-                }
-                gp.ui.addMessage(text);
-                gp.objects[gp.currentMap][i] = null;
-            }
-        }
-    }
     public void contactMonster(int i) {
 
         if(i != 999) {
@@ -609,22 +580,18 @@ public class Player extends Entity {
         int itemIndex = gp.ui.getItemIndexOnSlot(gp.ui.playerSlotCol, gp.ui.playerSlotRow);
 
         if(itemIndex < inventory.size()) {
-
             Entity selectedItem = inventory.get(itemIndex);
 
             if(selectedItem.type == type_sword || selectedItem.type == type_axe || selectedItem.type == type_pickaxe) {
-
                 currentWeapon = selectedItem;
                 attack = getAttack();
                 getAttackImage();
             }
             else if(selectedItem.type == type_shield) {
-
                 currentShield = selectedItem;
                 defense = getDefense();
             }
             else if(selectedItem.type == type_light) {
-                
                 if(currentLight == selectedItem) {
                     currentLight = null; // unequip the item
                 }
@@ -634,40 +601,23 @@ public class Player extends Entity {
                 lightUpdated = true;
             }
             else if(selectedItem.type == type_consumable) {
-                
-                if(selectedItem.use(this) == true) {
+                if(selectedItem.use(this)) {
                     if(selectedItem.amount > 1) {
                         selectedItem.amount--;
                     }
                     else {
                         inventory.remove(itemIndex);
                     }
-                    
                 }
             }
         }
     }
-    public int searchItemInInventory(String itemName) {
-
-        int itemIndex = 999;
-
-        for(int i = 0; i < inventory.size(); i++) {
-            if(inventory.get(i).name.equals(itemName)) {
-                itemIndex = i;
-                break;
-            }
-        }
-        return itemIndex;
-    }
     public boolean canObtainItem(Entity item) { // Add item to the inventory, check if you can stack item
-
         boolean canObtain = false;
-
         Entity newItem = gp.eGenerator.getObject(item.name);
 
         // CHECK IF STACKABLE
-        if(newItem.stackable == true) {
-
+        if(newItem.stackable) {
             int index = searchItemInInventory(newItem.name);
 
             if(index != 999) {
@@ -689,5 +639,49 @@ public class Player extends Entity {
         }
         return canObtain;
     }
+    public void pickUpObject(int i) {
+        if(i != 999) {
+            // PICKUP ONLY ITEMS
+            if(gp.objects[gp.currentMap][i].type == type_pickUpOnly) {
+                gp.objects[gp.currentMap][i].use(this);
+                gp.objects[gp.currentMap][i] = null;
+            }
+
+            else if(gp.objects[gp.currentMap][i].type == type_obstacle) {
+                if(keyH.enterPressed) {
+                    attackCancelled = true;
+                    gp.objects[gp.currentMap][i].interact();
+                }
+            }
+
+            // INVENTORY ITEMS
+            else{
+                String text;
+
+                if(canObtainItem(gp.objects[gp.currentMap][i])) {
+                    gp.playSE(1);
+                    text = "Got a " + gp.objects[gp.currentMap][i].name;
+                }
+                else {
+                    text = "Your inventory is full";
+                }
+                gp.ui.addMessage(text);
+                gp.objects[gp.currentMap][i] = null;
+            }
+        }
+    }
+    public int searchItemInInventory(String itemName) {
+        int itemIndex = 999;
+
+        for(int i = 0; i < inventory.size(); i++) {
+            if(inventory.get(i).name.equals(itemName)) {
+                itemIndex = i;
+                break;
+            }
+        }
+        return itemIndex;
+    }
+
+
 
 }
