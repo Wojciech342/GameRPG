@@ -4,7 +4,6 @@ import entity.Entity;
 import main.GamePanel;
 
 public class OBJ_Tent extends Entity {
-
     GamePanel gp;
     public static final String objName = "Tent";
 

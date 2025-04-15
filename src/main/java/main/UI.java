@@ -1071,7 +1071,7 @@ public class UI { // UI - User interface
         g2.drawString(text, textX, textY);
         if(commandNum == 0) {
             g2.drawString(">", textX-25, textY);
-            if(gp.keyHandler.enterPressed == true) {
+            if(gp.keyHandler.enterPressed) {
                 subState = 0;
                 commandNum = 0;
                 gp.gameState = gp.titleState;
@@ -1086,7 +1086,7 @@ public class UI { // UI - User interface
         g2.drawString(text, textX, textY);
         if(commandNum == 1) {
             g2.drawString(">", textX-25, textY);
-            if(gp.keyHandler.enterPressed == true) {
+            if(gp.keyHandler.enterPressed) {
                 subState = 0;
                 commandNum = 4;
             }

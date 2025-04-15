@@ -218,11 +218,11 @@ public class Player extends Entity {
     public void update() {
         if(knockBack) {
             collisionOn = false; // // collisionOn is changed in the checkTile method if there is a collision
-            gp.cChecker.checkTile(this);
-            gp.cChecker.checkObject(this, true);
-            gp.cChecker.checkEntity(this, gp.npcs); // check player collision with NPC
-            gp.cChecker.checkEntity(this, gp.monsters);
-            gp.cChecker.checkEntity(this, gp.interactiveTiles);
+            gp.collisionChecker.checkTile(this);
+            gp.collisionChecker.checkObject(this, true);
+            gp.collisionChecker.checkEntity(this, gp.npcs); // check player collision with NPC
+            gp.collisionChecker.checkEntity(this, gp.monsters);
+            gp.collisionChecker.checkEntity(this, gp.interactiveTiles);
 
             if(collisionOn) {
                 knockBackCounter = 0;
@@ -248,7 +248,7 @@ public class Player extends Entity {
         else if(attacking) {
             attacking();
         }
-        else if(keyH.spacePressed) {
+        else if(keyH.guardUp) {
             guarding = true;
             guardCounter++;
         }
@@ -270,25 +270,25 @@ public class Player extends Entity {
 
             // CHECK TILE COLLISION 
             collisionOn = false; // // collisionOn is changed in the checkTile method if there is a collision
-            gp.cChecker.checkTile(this);
+            gp.collisionChecker.checkTile(this);
 
             // CHECK OBJECT COLLISION
-            int objIndex = gp.cChecker.checkObject(this, true);
+            int objIndex = gp.collisionChecker.checkObject(this, true);
             pickUpObject(objIndex);
 
             // CHECK NPC COLLISION
-            npcIndex = gp.cChecker.checkEntity(this, gp.npcs); // check player collision with NPC
+            npcIndex = gp.collisionChecker.checkEntity(this, gp.npcs); // check player collision with NPC
             interactNPC(npcIndex);
 
             // CHECK MONSTER COLLISION
-            int monsterIndex = gp.cChecker.checkEntity(this, gp.monsters);
+            int monsterIndex = gp.collisionChecker.checkEntity(this, gp.monsters);
             contactMonster(monsterIndex);
 
             // CHECK INTERACTIVE TILE COLLISION
-            gp.cChecker.checkEntity(this, gp.interactiveTiles);
+            gp.collisionChecker.checkEntity(this, gp.interactiveTiles);
 
             // CHECK EVENT
-            gp.eHandler.checkEvent();
+            gp.eventHandler.checkEvent();
 
             // IF COLLISION IS FALSE, PLAYER CAN MOVE
             if(!collisionOn && !keyH.enterPressed) { // keyH.enterPressed == false without it the player will move when the enter is pressed
@@ -614,7 +614,7 @@ public class Player extends Entity {
     }
     public boolean canObtainItem(Entity item) { // Add item to the inventory, check if you can stack item
         boolean canObtain = false;
-        Entity newItem = gp.eGenerator.getObject(item.name);
+        Entity newItem = gp.entityGenerator.getObject(item.name);
 
         // CHECK IF STACKABLE
         if(newItem.stackable) {

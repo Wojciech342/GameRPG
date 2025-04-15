@@ -25,15 +25,15 @@ public class Projectile extends Entity {
     public void update() {
 
         if(user == gp.player) {
-            int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
+            int monsterIndex = gp.collisionChecker.checkEntity(this, gp.monsters);
             if(monsterIndex != 999) {
                 gp.player.damageMonster(monsterIndex, this, attack*(gp.player.level), knockBackPower);
-                generateParticle(user.projectile, gp.monster[gp.currentMap][monsterIndex]);
+                generateParticle(user.projectile, gp.monsters[gp.currentMap][monsterIndex]);
                 alive = false;
             }
         }
         else {
-            boolean contactPlayer = gp.cChecker.checkPlayer(this);
+            boolean contactPlayer = gp.collisionChecker.checkPlayer(this);
             if(gp.player.invincible == false && contactPlayer == true) {
                 damagePlayer(attack);
                 generateParticle(user.projectile, gp.player);
@@ -64,7 +64,6 @@ public class Projectile extends Entity {
         }
     }
     public boolean haveResource(Entity user) {
-
         boolean haveResource = false;
         return haveResource;
     }

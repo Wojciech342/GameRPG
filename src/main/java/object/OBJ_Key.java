@@ -4,7 +4,6 @@ import entity.Entity;
 import main.GamePanel;
 
 public class OBJ_Key extends Entity {
-    
     GamePanel gp;
     public static final String objName = "Key";
 
@@ -24,16 +23,14 @@ public class OBJ_Key extends Entity {
         dialogues[0][0] = "You use the " + name + " and open the door";
 
         dialogues[1][0] = "You can't use the key here";
-
     }
     public boolean use(Entity entity) {
-
-        int objIndex = getDetected(entity, gp.obj, "Door");
+        int objIndex = getDetected(entity, gp.objects, "Door");
 
         if(objIndex != 999) {
             startDialogue(this, 0);
             gp.playSE(3);
-            gp.obj[gp.currentMap][objIndex] = null;
+            gp.objects[gp.currentMap][objIndex] = null;
             return true;
         }
         else {

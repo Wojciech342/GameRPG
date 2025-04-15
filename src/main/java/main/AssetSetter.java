@@ -92,7 +92,6 @@ public class AssetSetter {
         if (!Progress.skeletonLordDefeated) {
             placeEntity(new MON_SkeletonLord(gp), 23, 16, gp.monsters);
         }
-
     }
     public void setInteractiveTile() {
         mapNum = 0;

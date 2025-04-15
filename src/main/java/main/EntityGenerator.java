@@ -22,7 +22,6 @@ import object.OBJ_Tent;
 import object.OBJ_BlueHeart;
 
 public class EntityGenerator {
-    
     GamePanel gp;
 
     public EntityGenerator(GamePanel gp) {
@@ -51,7 +50,6 @@ public class EntityGenerator {
             case OBJ_Tent.objName -> new OBJ_Tent(gp);
             default -> null;
         };
-
         return obj;
     }
 }

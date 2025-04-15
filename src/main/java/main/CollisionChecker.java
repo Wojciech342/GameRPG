@@ -32,34 +32,34 @@ public class CollisionChecker {
         switch(direction) {
         case "up":
             entityTopRow = (entityTopWorldY - entity.speed)/gp.tileSize;
-            tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
-            tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];
-            if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
+            tileNum1 = gp.tileManager.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
+            tileNum2 = gp.tileManager.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];
+            if(gp.tileManager.tiles[tileNum1].collision || gp.tileManager.tiles[tileNum2].collision) {
                 entity.collisionOn = true;
             }
             break;
          
         case "down":
             entityBottomRow = (entityBottomWorldY + entity.speed)/gp.tileSize;
-            tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
-            tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
-            if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
+            tileNum1 = gp.tileManager.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
+            tileNum2 = gp.tileManager.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
+            if(gp.tileManager.tiles[tileNum1].collision || gp.tileManager.tiles[tileNum2].collision) {
                 entity.collisionOn = true;
             }
             break;
         case "left":
             entityLeftCol = (entityLeftWorldX - entity.speed)/gp.tileSize;
-            tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
-            tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
-            if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
+            tileNum1 = gp.tileManager.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
+            tileNum2 = gp.tileManager.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
+            if(gp.tileManager.tiles[tileNum1].collision || gp.tileManager.tiles[tileNum2].collision) {
                 entity.collisionOn = true;
             }
             break;
         case "right":
             entityRightCol = (entityRightWorldX + entity.speed)/gp.tileSize;
-            tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];
-            tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
-            if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
+            tileNum1 = gp.tileManager.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];
+            tileNum2 = gp.tileManager.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
+            if(gp.tileManager.tiles[tileNum1].collision || gp.tileManager.tiles[tileNum2].collision) {
                 entity.collisionOn = true;
             }
             break;
@@ -72,20 +72,20 @@ public class CollisionChecker {
 
         // Use a temporal direction when it's being knockbacked
         String direction = entity.direction;
-        if(entity.knockBack == true) {
+        if(entity.knockBack) {
             direction = entity.knockBackDirection;
         }
 
-        for(int i = 0; i < gp.obj[1].length; i++) {
+        for(int i = 0; i < gp.objects[1].length; i++) {
 
-            if(gp.obj[gp.currentMap][i] != null) {
+            if(gp.objects[gp.currentMap][i] != null) {
 
                 // Get entity's solid area position
                 entity.solidArea.x = entity.worldX + entity.solidArea.x;
                 entity.solidArea.y = entity.worldY + entity.solidArea.y;
                 // Get the object's solid area position
-                gp.obj[gp.currentMap][i].solidArea.x = gp.obj[gp.currentMap][i].worldX + gp.obj[gp.currentMap][i].solidArea.x; // object solid area's x and y are 0 so it doesn't change anything for now
-                gp.obj[gp.currentMap][i].solidArea.y = gp.obj[gp.currentMap][i].worldY + gp.obj[gp.currentMap][i].solidArea.y; // but if we want we can change that and change the solid area
+                gp.objects[gp.currentMap][i].solidArea.x = gp.objects[gp.currentMap][i].worldX + gp.objects[gp.currentMap][i].solidArea.x; // object solid area's x and y are 0 so it doesn't change anything for now
+                gp.objects[gp.currentMap][i].solidArea.y = gp.objects[gp.currentMap][i].worldY + gp.objects[gp.currentMap][i].solidArea.y; // but if we want we can change that and change the solid area
 
                 // We didn't use the intersects for the tile collision because there we only need to check 2 tiles if they are colliding
                 // With intersect we would need to check all the tiles that we see so that would not be efficient
@@ -98,18 +98,18 @@ public class CollisionChecker {
                     case "right": entity.solidArea.x += entity.speed; break;
                 }
                 // Check player collision with object, if other entity collides with object it is fine, we do not do anything
-                if(entity.solidArea.intersects(gp.obj[gp.currentMap][i].solidArea)) {
-                    if(gp.obj[gp.currentMap][i].collision == true) {
+                if(entity.solidArea.intersects(gp.objects[gp.currentMap][i].solidArea)) {
+                    if(gp.objects[gp.currentMap][i].collision) {
                         entity.collisionOn = true;
                     }
-                    if(player == true) {
+                    if(player) {
                         index = i;
                     }
                 }
                 entity.solidArea.x = entity.solidAreaDefaultX;
                 entity.solidArea.y = entity.solidAreaDefaultY;
-                gp.obj[gp.currentMap][i].solidArea.x = gp.obj[gp.currentMap][i].solidAreaDefaultX;
-                gp.obj[gp.currentMap][i].solidArea.y = gp.obj[gp.currentMap][i].solidAreaDefaultY;
+                gp.objects[gp.currentMap][i].solidArea.x = gp.objects[gp.currentMap][i].solidAreaDefaultX;
+                gp.objects[gp.currentMap][i].solidArea.y = gp.objects[gp.currentMap][i].solidAreaDefaultY;
             }
         }
         return index;
@@ -120,7 +120,7 @@ public class CollisionChecker {
 
         // Use a temporal direction when it's being knockbacked
         String direction = entity.direction;
-        if(entity.knockBack == true) {
+        if(entity.knockBack) {
             direction = entity.knockBackDirection;
         }
 

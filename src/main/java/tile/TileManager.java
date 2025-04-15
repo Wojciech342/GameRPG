@@ -12,9 +12,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class TileManager {
-    
     GamePanel gp;
-    public Tile[] tile;
+    public Tile[] tiles;
     public int mapTileNum[][][];
     //boolean drawPath = true;
     ArrayList<String> fileNames = new ArrayList<>();
@@ -22,7 +21,6 @@ public class TileManager {
 
 
     public TileManager(GamePanel gp) {
-
         this.gp = gp;
 
         InputStream is = getClass().getResourceAsStream("/maps/tiledata.txt");
@@ -41,8 +39,8 @@ public class TileManager {
             e.printStackTrace();
         }
 
-        tile = new Tile[fileNames.size()];
-        getTileImage();
+        tiles = new Tile[fileNames.size()];
+        setTilesData();
 
         // GET THE maxWorldCol & Row
         is = getClass().getResourceAsStream("/maps/worldmap.txt");
@@ -51,16 +49,15 @@ public class TileManager {
         // IMPORTANT THE MAP MUST BE SQUARE OTHERWISE THE CODE WONT WORK (THE CODE CAN BE CHANGED)
         try{
             String line2 = br.readLine();
-            String maxTile[] = line2.split(" ");
+            String[] maxTile = line2.split(" ");
 
             gp.maxWorldCol = maxTile.length;
             gp.maxWorldRow = maxTile.length;
             mapTileNum = new int[gp.maxMap][gp.maxWorldCol][gp.maxWorldRow];
 
             br.close();
-
         } catch(IOException e) {
-            System.out.println("Exception");
+            e.printStackTrace();
         }
         
         loadMap("/maps/worldmap.txt", 0);
@@ -69,46 +66,27 @@ public class TileManager {
         loadMap("/maps/dungeon02.txt", 3);
     }
 
-    public void getTileImage() {
-
+    public void setTilesData() {
         for(int i = 0; i < fileNames.size(); i++) {
-
-            String fileName;
-            boolean collision;
-
-            // Get a file name
-            fileName = fileNames.get(i);
-
-            // Get a collision status
-            if(collisionStatus.get(i).equals("true")) {
-                collision = true;
-            }
-            else {
-                collision = false;
-            }
-
+            String fileName = fileNames.get(i);
+            boolean collision = collisionStatus.get(i).equals("true");
             setup(i, fileName, collision);
         }
-
     }
-
     public void setup(int index, String imageName, boolean collision) {
-
         UtilityTool uTool = new UtilityTool();
 
         try{
-            tile[index] = new Tile();
-            tile[index].image =ImageIO.read(getClass().getResourceAsStream("/tiles/" + imageName));
-            tile[index].image = uTool.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
-            tile[index].collision = collision;
+            tiles[index] = new Tile();
+            tiles[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/" + imageName));
+            tiles[index].image = uTool.scaleImage(tiles[index].image, gp.tileSize, gp.tileSize);
+            tiles[index].collision = collision;
 
         }catch(IOException e){
             e.printStackTrace();
         }
     }
-
     public void loadMap(String filePath, int map) {
-
         try{
             InputStream is = getClass().getResourceAsStream(filePath);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -170,7 +148,7 @@ public class TileManager {
                worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
                worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
                worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
-                g2.drawImage(tile[tileNum].image, screenX, screenY, null);
+                g2.drawImage(tiles[tileNum].image, screenX, screenY, null);
             }
 
             worldCol++;

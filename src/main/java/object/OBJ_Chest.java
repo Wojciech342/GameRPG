@@ -4,13 +4,11 @@ import entity.Entity;
 import main.GamePanel;
 
 public class OBJ_Chest extends Entity {
-
     GamePanel gp;
     
     public static final String objName = "Chest";
 
     public OBJ_Chest(GamePanel gp) {
-
         super(gp);
         this.gp = gp;
 
@@ -30,22 +28,18 @@ public class OBJ_Chest extends Entity {
     }
     public void setLoot(Entity loot) {
         this.loot = loot;
-
         setDialogues();
     }
     public void setDialogues() {
-
         dialogues[0][0] = "You open the chest and find a " + loot.name + "!" + "\n...But your inventory is full";
         dialogues[1][0] = "You open the chest and find a " + loot.name + "!" + "\nYou obtain the " + loot.name + "!";
         dialogues[2][0] = "It's empty.";
-
     }
     public void interact() {
-
-        if(opened == false) {
+        if(!opened) {
             gp.playSE(3);
 
-            if(gp.player.canObtainItem(loot) == false) {
+            if(!gp.player.canObtainItem(loot)) {
                 startDialogue(this, 0);
             }
             else {

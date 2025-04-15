@@ -88,15 +88,13 @@ public class Lighting {
         filterAlpha = 0f;
     }
     public void update() {
-
-        if(gp.player.lightUpdated == true) {
+        if(gp.player.lightUpdated) {
             setLightSource();
             gp.player.lightUpdated = false;
         }
 
         // Check the state of the day
         if(dayState == day) {
-
             dayCounter++;
 
             if(dayCounter > 3600) {
@@ -105,7 +103,6 @@ public class Lighting {
             }
         }
         else if(dayState == dusk) {
-
             filterAlpha += 0.001f;
 
             if(filterAlpha > 1f) {
@@ -114,7 +111,6 @@ public class Lighting {
             }
         }
         else if(dayState == night) {
-
             dayCounter++;
             if(dayCounter > 3600) {
                 dayState = dawn;
@@ -122,7 +118,6 @@ public class Lighting {
             }
         }
         else if(dayState == dawn) {
-            
             filterAlpha -= 0.001f;
 
             if(filterAlpha < 0f) {
@@ -133,7 +128,6 @@ public class Lighting {
     }
     
     public void draw(Graphics2D g2) {
-
         if(gp.currentArea == gp.outside) {
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, filterAlpha)); // change alpha to draw the filter
         }
@@ -142,7 +136,9 @@ public class Lighting {
         }
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f)); // change alpha to default
 
-        // DEBUG
+        //debugDayState(g2);
+    }
+    private void debugDayState(Graphics2D g2) {
         String situation = "";
 
         switch (dayState) {

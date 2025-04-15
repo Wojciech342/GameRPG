@@ -6,7 +6,6 @@ import entity.Entity;
 import main.GamePanel;
 
 public class IT_DestructibleWall extends InteractiveTile {
-
     GamePanel gp;
 
     public IT_DestructibleWall (GamePanel gp) {
@@ -24,17 +23,12 @@ public class IT_DestructibleWall extends InteractiveTile {
     public void playSE() {
         gp.playSE(20);
     }
-    
-    public InteractiveTile getDestroyedForm() {
-        InteractiveTile tile = null;
-        return tile;
-    }
+
     public Color getParticleColor() {
-        Color color = new Color(65,65,65);
-        return color;
+        return new Color(65,65,65);
     }
     public int getParticleSize() {
-        int size = 6; // 6 pixels
+        int size = 6;
         return size;
     }
     public int getParticleSpeed() {
