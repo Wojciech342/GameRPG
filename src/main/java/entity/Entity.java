@@ -122,6 +122,10 @@ public class Entity {
         this.gp = gp;
     }
 
+    public void setPosition(int col, int row) {
+        this.worldX = gp.tileSize * col;
+        this.worldY = row;
+    }
     public int getScreenX() {
         int screenX = worldX - gp.player.worldX + gp.player.screenX;
         return screenX;
@@ -213,11 +217,11 @@ public class Entity {
     public void checkDrop(){}
     public void dropItem(Entity droppedItem) {
 
-        for(int i = 0; i < gp.obj[1].length; i++) {
-            if(gp.obj[gp.currentMap][i] == null) {
-                gp.obj[gp.currentMap][i] = droppedItem;
-                gp.obj[gp.currentMap][i].worldX = worldX; // the dead monster coordinates
-                gp.obj[gp.currentMap][i].worldY = worldY;
+        for(int i = 0; i < gp.objects[1].length; i++) {
+            if(gp.objects[gp.currentMap][i] == null) {
+                gp.objects[gp.currentMap][i] = droppedItem;
+                gp.objects[gp.currentMap][i].worldX = worldX; // the dead monster coordinates
+                gp.objects[gp.currentMap][i].worldY = worldY;
                 break; // we want it only for one dead monster, we have to break it
             }
         }
@@ -233,10 +237,10 @@ public class Entity {
         Particle p2 = new Particle(gp, target, color, size, speed, maxLife, 2, -1);// right = +
         Particle p3 = new Particle(gp, target, color, size, speed, maxLife, -2, 1);// top = -
         Particle p4 = new Particle(gp, target, color, size, speed, maxLife, 2, 1);// bottom = +
-        gp.particleList.add(p1);
-        gp.particleList.add(p2);
-        gp.particleList.add(p3);
-        gp.particleList.add(p4);
+        gp.particles.add(p1);
+        gp.particles.add(p2);
+        gp.particles.add(p3);
+        gp.particles.add(p4);
     }
     public Color getParticleColor() {
         Color color = null;
@@ -254,15 +258,14 @@ public class Entity {
         int maxLife = 0;
         return maxLife;
     }
-
     public void checkCollision() {
 
         collisionOn = false;
         gp.cChecker.checkTile(this);
         gp.cChecker.checkObject(this, false); // not player so false
-        gp.cChecker.checkEntity(this, gp.npc);
-        gp.cChecker.checkEntity(this, gp.monster);
-        gp.cChecker.checkEntity(this, gp.iTile);
+        gp.cChecker.checkEntity(this, gp.npcs);
+        gp.cChecker.checkEntity(this, gp.monsters);
+        gp.cChecker.checkEntity(this, gp.interactiveTiles);
         boolean contactPlayer = gp.cChecker.checkPlayer(this);
 
         if(this.type == type_monster && contactPlayer == true) {
@@ -270,19 +273,16 @@ public class Entity {
         }
     }
     public void update() { // OVERRIDE in player class
-
-        if(sleep == false) {
-
-            if(knockBack == true) {
-
+        if(!sleep) {
+            if(knockBack) {
                 checkCollision();
     
-                if(collisionOn == true) {
+                if(collisionOn) {
                     knockBackCounter = 0;
                     knockBack = false;
                     speed = defaultSpeed;
                 }
-                else if(collisionOn == false) {
+                else {
                     switch(knockBackDirection) {
                     case "up": worldY -= speed; break;
                     case "down": worldY += speed; break;
@@ -298,7 +298,7 @@ public class Entity {
                     speed = defaultSpeed;
                 }
             }
-            else if(attacking == true) {
+            else if(attacking) {
                 attacking();
             }
             else {
@@ -328,7 +328,7 @@ public class Entity {
                 }
             }
             
-            if(invincible == true) {
+            if(invincible) {
                 invincibleCounter++;
                 if(invincibleCounter > 30) {
                     invincible = false;
@@ -338,7 +338,7 @@ public class Entity {
             if(shotAvailableCounter < 30) {
                 shotAvailableCounter++;
             }
-            if(offBalance == true) {
+            if(offBalance) {
                 offBalanceCounter++;
                 if(offBalanceCounter > 60) {
                     offBalance = false;
@@ -348,7 +348,6 @@ public class Entity {
         }
     }
     public void checkAttack(int rate, int straight, int horizontal) { // straight - vertical distance, horizontal - horizontal distance
-
         boolean targetInRange = false;
         int xDis = getXDistance(gp.player);
         int yDis = getYDistance(gp.player);
@@ -376,7 +375,7 @@ public class Entity {
             break;
         }
 
-        if(targetInRange == true) {
+        if(targetInRange) {
             // Check if it initates an attack
             int i = new Random().nextInt(rate);
             if(i == 0) {
@@ -388,16 +387,15 @@ public class Entity {
         }
     }
     public void checkShoot(int rate, int shotInterval) {
-        
         int i = new Random().nextInt(rate);// pick up a number from 0 to rate - 1
         if(i == 0 && projectile.alive == false && shotAvailableCounter == shotInterval) {
             
             projectile.set(worldX, worldY, direction, true, this);
 
             // CHECK VACANCY
-            for(int ii = 0; ii < gp.projectile[1].length; ii++) {
-                if(gp.projectile[gp.currentMap][ii] == null) {
-                    gp.projectile[gp.currentMap][ii] = projectile;
+            for(int ii = 0; ii < gp.projectiles[1].length; ii++) {
+                if(gp.projectiles[gp.currentMap][ii] == null) {
+                    gp.projectiles[gp.currentMap][ii] = projectile;
                     break;
                 }
             }
@@ -406,7 +404,6 @@ public class Entity {
         }
     }
     public void checkStartChasing(Entity target, int distance, int rate) {
-
         if(getTileDistance(target) < distance) {
             int i = new Random().nextInt(rate);
             if(i == 0) {
@@ -415,7 +412,6 @@ public class Entity {
         }
     }
     public void checkStopChasing(Entity target, int distance, int rate) {
-
         if(getTileDistance(target) > distance) {
             int i = new Random().nextInt(rate);
             if(i == 0) {
@@ -424,7 +420,6 @@ public class Entity {
         }
     }
     public void getRandomDirection(int interval) {
-
         actionLockCounter++;
 
             if(actionLockCounter > interval) {
@@ -439,7 +434,6 @@ public class Entity {
             }
     }
     public void moveTowardPlayer(int interval) {
-
         actionLockCounter++;
 
         if(actionLockCounter > interval) {
@@ -464,7 +458,6 @@ public class Entity {
         }
     }
     public String getOppositeDirection(String direction) {
-
         String oppositeDirection = "";
         switch(direction) {
         case "up": oppositeDirection = "down"; break;
@@ -475,13 +468,12 @@ public class Entity {
         return oppositeDirection;
     }
     public void attacking() {
-
         spriteCounter++;
 
         if(spriteCounter <= motion1_duration) { // First attacking image for motion1_duration frames
             spriteNum = 1;
         }
-        else if(spriteCounter > motion1_duration && spriteCounter <= motion2_duration) {  // Second attacking image for motion2_duration frames
+        else if(spriteCounter <= motion2_duration) {  // Second attacking image for motion2_duration frames
             spriteNum = 2;
 
             // Save the current worldX, worldY, solidArea
@@ -510,13 +502,13 @@ public class Entity {
             }
             else { // Player
                 // Check monster collision with the updated worldX, worldY and solidArea
-                int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
+                int monsterIndex = gp.cChecker.checkEntity(this, gp.monsters);
                 gp.player.damageMonster(monsterIndex, this, attack, currentWeapon.knockBackPower);
 
-                int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
+                int iTileIndex = gp.cChecker.checkEntity(this, gp.interactiveTiles);
                 gp.player.damageInteractiveTile(iTileIndex);
 
-                int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
+                int projectileIndex = gp.cChecker.checkEntity(this, gp.projectiles);
                 gp.player.damageProjectile(projectileIndex); 
             }
             // After checking collision, restore the original idea
@@ -525,22 +517,21 @@ public class Entity {
             solidArea.width = solidAreaWidth;
             solidArea.height = solidAreaHeight;
         }
-        else if(spriteCounter > motion2_duration) {
+        else {
             spriteNum = 1;
             spriteCounter = 0;
             attacking = false;
         }
     }
     public void damagePlayer(int attack) {
-        
-        if(gp.player.invincible == false) {
+        if(!gp.player.invincible) {
 
             int damage = attack - gp.player.defense;
 
             // Get an opposite direction of this attacker
             String canGuardDirection = getOppositeDirection(direction);
 
-            if(gp.player.guarding == true && gp.player.direction.equals(canGuardDirection)) {
+            if(gp.player.guarding && gp.player.direction.equals(canGuardDirection)) {
 
                 // Parry
                 if(gp.player.guardCounter < 20) { // Parry if you press the block less than 20 frames before the attack
@@ -572,7 +563,6 @@ public class Entity {
         }
     }
     public void setKnockBack(Entity target, Entity attacker, int knockBackPower) {
-
         this.attacker = attacker;
         target.knockBackDirection = attacker.direction;
         target.speed += knockBackPower;
@@ -584,17 +574,14 @@ public class Entity {
            worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
            worldY + gp.tileSize*5 > gp.player.worldY - gp.player.screenY &&
            worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
-            
             inCamera = true;
         }
         return inCamera;
     }
     public void draw(Graphics2D g2) {
-
         BufferedImage image = null;
 
         if(inCamera()) {
-
             int tempScreenX = getScreenX();
             int tempScreenY = getScreenY();
             switch(direction) {
@@ -631,23 +618,23 @@ public class Entity {
                 }
                 break;
             case "right":
-                if(attacking == false) {
+                if(!attacking) {
                     if(spriteNum == 1) {image = right1;}
                     if(spriteNum == 2) {image = right2;}
                 }
-                else if(attacking == true) {
+                else {
                     if(spriteNum == 1) {image = attackRight1;}
                     if(spriteNum == 2) {image = attackRight2;}
                 }
                 break;
             }
 
-            if(invincible == true) {
+            if(invincible) {
                 hpBarOn = true;
                 hpBarCounter = 0;
                 changeAlpha(g2, 0.4f);
             }
-            if(dying == true) {
+            if(dying) {
                 dyingAnimation(g2);
             }
             g2.drawImage(image, tempScreenX, tempScreenY, null);
@@ -656,20 +643,17 @@ public class Entity {
         }
     }
     public void dyingAnimation(Graphics2D g2) {
-
         dyingCounter++;
-
         int i = 5;
-
         
         if(dyingCounter <= i) {changeAlpha(g2, 0f);}
-        else if(dyingCounter > i && dyingCounter <= i*2) {changeAlpha(g2, 1f);}
-        else if(dyingCounter > i*2 && dyingCounter <= i*3) {changeAlpha(g2, 0f);}
-        else if(dyingCounter > i*3 && dyingCounter <= i*4) {changeAlpha(g2, 1f);}
-        else if(dyingCounter > i*4 && dyingCounter <= i*5) {changeAlpha(g2, 0f);}
-        else if(dyingCounter > i*5 && dyingCounter <= i*6) {changeAlpha(g2, 1f);}
-        else if(dyingCounter > i*6 && dyingCounter <= i*7) {changeAlpha(g2, 0f);}
-        else if(dyingCounter > i*7 && dyingCounter <= i*8) {changeAlpha(g2, 1f);}
+        else if(dyingCounter <= i*2) {changeAlpha(g2, 1f);}
+        else if(dyingCounter <= i*3) {changeAlpha(g2, 0f);}
+        else if(dyingCounter <= i*4) {changeAlpha(g2, 1f);}
+        else if(dyingCounter <= i*5) {changeAlpha(g2, 0f);}
+        else if(dyingCounter <= i*6) {changeAlpha(g2, 1f);}
+        else if(dyingCounter <= i*7) {changeAlpha(g2, 0f);}
+        else if(dyingCounter <= i*8) {changeAlpha(g2, 1f);}
         
         if(dyingCounter > i*8) {
             alive = false;
@@ -693,83 +677,7 @@ public class Entity {
         }
         return image;
     }
-    public void searchPath(int goalCol, int goalRow) {
-
-        int startCol = (worldX + solidArea.x)/gp.tileSize;
-        int startRow = (worldY + solidArea.y)/gp.tileSize; 
-
-        gp.pFinder.setNodes(startCol, startRow, goalCol, goalRow);
-        
-        if(gp.pFinder.search() == true) {
-
-            // Next worldX & worldY
-            int nextX = gp.pFinder.pathList.get(0).col * gp.tileSize;
-            int nextY = gp.pFinder.pathList.get(0).row * gp.tileSize;
-
-            // Entity's solidArea position
-            int enLeftX = worldX + solidArea.x;
-            int enRightX = worldX + solidArea.x + solidArea.width;
-            int enTopY = worldY + solidArea.y;
-            int enBottomY = worldY + solidArea.y + solidArea.height;
-
-            if(enTopY > nextY && enLeftX >= nextX && enRightX < nextX + gp.tileSize) { // entity is straight below the goal
-                direction = "up";
-            }
-            else if(enTopY < nextY && enLeftX >= nextX && enRightX < nextX + gp.tileSize) { // entity is straight up to the goal
-                direction = "down";
-            }
-            else if(enTopY >= nextY && enBottomY < nextY + gp.tileSize) {
-                // left or right
-                if(enLeftX > nextX) { // entity is straight to the right to the goal
-                    direction = "left";
-                }
-                else if(enLeftX < nextX) { // entity is straight to the left to the goal
-                    direction = "right";
-                }
-            }
-            else if(enTopY > nextY && enLeftX > nextX) { // entity is below the goal, but there can be collision upwards, (between two tiles)
-                // up or left
-                direction = "up";
-                checkCollision();
-                if(collisionOn == true) {
-                    direction = "left";
-                }
-            }
-            else if(enTopY > nextY && enLeftX < nextX) { // entity is below the goal, but there can be collision upwards, (between two tiles)
-                // up or right
-                direction = "up";
-                checkCollision();
-                if(collisionOn == true) {
-                    direction = "right";
-                }
-            }
-            else if(enTopY < nextY && enLeftX > nextX) { // entity is up to the goal, but there can be collision upwards, (between two tiles)
-                // down or left
-                direction = "down";
-                checkCollision();
-                if(collisionOn == true) {
-                    direction = "left";
-                }
-            }
-            else if(enTopY < nextY && enLeftX < nextX) { // entity is up to the goal, but there can be collision upwards, (between two tiles)
-                // down or left
-                direction = "down";
-                checkCollision();
-                if(collisionOn == true) {
-                    direction = "right";
-                }
-            }
-
-            // If reaches the goal, stop the search
-            // int nextCol = gp.pFinder.pathList.get(0).col;
-            // int nextRow = gp.pFinder.pathList.get(0).row;
-            // if(nextCol == goalCol && nextRow == goalRow) {
-            //     onPath = false;
-            // }
-        }
-    }
-    public int getDetected(Entity user, Entity target[][], String targetName) {
-
+    public int getDetected(Entity user, Entity[][] target, String targetName) {
         int index = 999;
         // Check the sorrounding object
         int nextWorldX = user.getLeftX();
@@ -796,5 +704,71 @@ public class Entity {
             }
         }
         return index;
+    }
+    public void searchPath(int goalCol, int goalRow) {
+        int startCol = (worldX + solidArea.x)/gp.tileSize;
+        int startRow = (worldY + solidArea.y)/gp.tileSize;
+
+        gp.pFinder.setNodes(startCol, startRow, goalCol, goalRow);
+
+        if(gp.pFinder.search()) {
+            // Next worldX & worldY
+            int nextX = gp.pFinder.pathList.getFirst().col * gp.tileSize;
+            int nextY = gp.pFinder.pathList.getFirst().row * gp.tileSize;
+
+            // Entity's solidArea position
+            int enLeftX = worldX + solidArea.x;
+            int enRightX = worldX + solidArea.x + solidArea.width;
+            int enTopY = worldY + solidArea.y;
+            int enBottomY = worldY + solidArea.y + solidArea.height;
+
+            if(enTopY > nextY && enLeftX >= nextX && enRightX < nextX + gp.tileSize) { // entity is straight below the goal
+                direction = "up";
+            }
+            else if(enTopY < nextY && enLeftX >= nextX && enRightX < nextX + gp.tileSize) { // entity is straight up to the goal
+                direction = "down";
+            }
+            else if(enTopY >= nextY && enBottomY < nextY + gp.tileSize) {
+                // left or right
+                if(enLeftX > nextX) { // entity is straight to the right to the goal
+                    direction = "left";
+                }
+                else if(enLeftX < nextX) { // entity is straight to the left to the goal
+                    direction = "right";
+                }
+            }
+            else if(enTopY > nextY && enLeftX > nextX) { // entity is below the goal, but there can be collision upwards, (between two tiles)
+                // up or left
+                direction = "up";
+                checkCollision();
+                if(collisionOn) {
+                    direction = "left";
+                }
+            }
+            else if(enTopY > nextY && enLeftX < nextX) { // entity is below the goal, but there can be collision upwards, (between two tiles)
+                // up or right
+                direction = "up";
+                checkCollision();
+                if(collisionOn) {
+                    direction = "right";
+                }
+            }
+            else if(enTopY < nextY && enLeftX > nextX) { // entity is up to the goal, but there can be collision upwards, (between two tiles)
+                // down or left
+                direction = "down";
+                checkCollision();
+                if(collisionOn) {
+                    direction = "left";
+                }
+            }
+            else if(enTopY < nextY && enLeftX < nextX) { // entity is up to the goal, but there can be collision upwards, (between two tiles)
+                // down or left
+                direction = "down";
+                checkCollision();
+                if(collisionOn) {
+                    direction = "right";
+                }
+            }
+        }
     }
 }
