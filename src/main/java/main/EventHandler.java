@@ -64,12 +64,12 @@ public class EventHandler {
             if(hit(0, 23, 12, "up")) {healingPool(gp.dialogueState);}
             else if(hit(0, 10, 39, "any")) {teleport(1,12,13,gp.indoor);} // to the merchant's house
             else if(hit(1, 12, 13, "any")) {teleport(0,10,39,gp.outside);} // to outside
-            else if(hit(1, 12, 9, "up")) {speak(gp.npc[1][0]);} // speak to merchant
+            else if(hit(1, 12, 9, "up")) {speak(gp.npcs[1][0]);} // speak to merchant
             else if(hit(0, 12, 9, "any")) {teleport(2,9,41,gp.dungeon);} // to the dungeon
             else if(hit(2, 9, 41, "any")) {teleport(0,12,9,gp.outside);} // to the outside
             else if(hit(2, 8, 7, "any")) {teleport(3,26,41,gp.dungeon);} // to the B2
             else if(hit(3, 26, 41, "any")) {teleport(2,8,7,gp.dungeon);} // to the B1
-
+            else if(hit(3, 25, 27, "any")) {skeletonLord();} // Start cut scene
         }
     }
     public boolean hit(int map, int col, int row, String reqDirection) {
@@ -106,14 +106,14 @@ public class EventHandler {
         canTouchEvent = false; // With this line we have to move away from the tile to trigger the event, is not present in healingPool
     }
     public void healingPool(int gameState) {
-        if(gp.keyH.enterPressed) {
+        if(gp.keyHandler.enterPressed) {
             gp.gameState = gameState;
             gp.player.attackCancelled = true;
             gp.playSE(2);
             eventMaster.startDialogue(eventMaster, 1);
             gp.player.life = gp.player.maxLife;
             gp.player.mana = gp.player.maxMana;
-            gp.aSetter.setMonster();
+            gp.assetSetter.placeMonstersOnMap();
             gp.saveLoad.save();
         }
     }
@@ -127,11 +127,16 @@ public class EventHandler {
         gp.playSE(13);
     }
     public void speak(Entity entity) {
-        if(gp.keyH.enterPressed) {
+        if(gp.keyHandler.enterPressed) {
             gp.gameState = gp.dialogueState;
             gp.player.attackCancelled = true;
             entity.speak();
         }
     }
-
+    public void skeletonLord() {
+        if(!gp.bossBattleOn && !Progress.skeletonLordDefeated) {
+            gp.gameState = gp.cutSceneState;
+            gp.cutSceneManager.sceneNum = gp.cutSceneManager.skeletonLord;
+        }
+    }
 }
