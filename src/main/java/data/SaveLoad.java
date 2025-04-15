@@ -12,12 +12,13 @@ import main.GamePanel;
 public class SaveLoad {
     
     GamePanel gp;
+    private final String saveDataFilepath = "src/main/java/data/save.dat";
     public SaveLoad(GamePanel gp) {
         this.gp = gp;
     }
     public void save() {
 
-        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("save.dat")))) {
+        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(saveDataFilepath))) {
 
             DataStorage ds = new DataStorage();
 
@@ -78,7 +79,7 @@ public class SaveLoad {
         }
     }
     public void load() {
-        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File("save.dat")))) {
+        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(saveDataFilepath))) {
 
             // Read the DataStorage object
             DataStorage ds = (DataStorage)ois.readObject();
