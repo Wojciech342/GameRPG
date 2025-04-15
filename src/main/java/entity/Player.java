@@ -100,11 +100,9 @@ public class Player extends Entity {
         worldY = gp.tileSize*22;
         direction = "down";
     }
-
     public void setDialogue() {
         dialogues[0][0] = gp.ui.currentDialogue = "You are level " + level + " now!\n";
     }
-
     public void restoreStatus() {
         life = maxLife;
         mana = maxMana;
@@ -116,7 +114,6 @@ public class Player extends Entity {
         lightUpdated = true;
         speed = defaultSpeed;
     }
-
     public void setItems() {
         inventory.clear();
         inventory.add(currentWeapon);
@@ -124,18 +121,15 @@ public class Player extends Entity {
         inventory.add(new OBJ_Key(gp));
         inventory.add(new OBJ_Potion_Red(gp));
     }
-
     public int getAttack() {
         attackArea = currentWeapon.attackArea;
         motion1_duration = currentWeapon.motion1_duration;
         motion2_duration = currentWeapon.motion2_duration;
         return attack = strength * currentWeapon.attackValue;
     }
-
     public int getDefense() {
         return defense = dexterity * currentShield.defenseValue;
     }
-
     public int getCurrentWeaponSlot() {
         int currentWeaponSlot = 0;
         for(int i = 0; i < inventory.size(); i++) {
@@ -146,7 +140,6 @@ public class Player extends Entity {
         }
         return currentWeaponSlot;
     }
-
     public int getCurrentShieldSlot() {
         int currentShieldSlot = 0;
         for(int i = 0; i < inventory.size(); i++) {
@@ -214,7 +207,6 @@ public class Player extends Entity {
         }
         
     }
-
     public void getGuardImage() {
 
         guardUp = setup("/player/boy_guard_up", gp.tileSize, gp.tileSize);
@@ -222,15 +214,14 @@ public class Player extends Entity {
         guardLeft = setup("/player/boy_guard_left", gp.tileSize, gp.tileSize);
         guardRight = setup("/player/boy_guard_right", gp.tileSize, gp.tileSize);
     }
-
     public void update() {
         if(knockBack) {
             collisionOn = false; // // collisionOn is changed in the checkTile method if there is a collision
             gp.cChecker.checkTile(this);
             gp.cChecker.checkObject(this, true);
-            gp.cChecker.checkEntity(this, gp.npc); // check player collision with NPC
-            gp.cChecker.checkEntity(this, gp.monster);
-            gp.cChecker.checkEntity(this, gp.iTile);
+            gp.cChecker.checkEntity(this, gp.npcs); // check player collision with NPC
+            gp.cChecker.checkEntity(this, gp.monsters);
+            gp.cChecker.checkEntity(this, gp.interactiveTiles);
 
             if(collisionOn) {
                 knockBackCounter = 0;
@@ -285,15 +276,15 @@ public class Player extends Entity {
             pickUpObject(objIndex);
 
             // CHECK NPC COLLISION
-            npcIndex = gp.cChecker.checkEntity(this, gp.npc); // check player collision with NPC
+            npcIndex = gp.cChecker.checkEntity(this, gp.npcs); // check player collision with NPC
             interactNPC(npcIndex);
 
             // CHECK MONSTER COLLISION
-            int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
+            int monsterIndex = gp.cChecker.checkEntity(this, gp.monsters);
             contactMonster(monsterIndex);
 
             // CHECK INTERACTIVE TILE COLLISION
-            gp.cChecker.checkEntity(this, gp.iTile);
+            gp.cChecker.checkEntity(this, gp.interactiveTiles);
 
             // CHECK EVENT
             gp.eHandler.checkEvent();
@@ -316,7 +307,7 @@ public class Player extends Entity {
             }
 
             attackCancelled = false;
-            gp.keyH.enterPressed = false;
+            gp.keyHandler.enterPressed = false;
             guarding = false;
             guardCounter = 0;
     
@@ -342,7 +333,7 @@ public class Player extends Entity {
             guardCounter = 0;
         }
 
-        if(gp.keyH.shotKeyPressed == true && projectile.alive == false && 
+        if(gp.keyHandler.shotKeyPressed == true && projectile.alive == false &&
            shotAvailableCounter == 30 && projectile.haveResource(this) == true) {
 
             // SET DEFAULT COORDINATES, DIRECTION AND USER
@@ -351,9 +342,9 @@ public class Player extends Entity {
             // SUBTRACT THE COST (MANA, AMMO, ETC.)
             projectile.subtractResource(this);
 
-            for(int i = 0; i < gp.projectile[i].length; i++) {
-                if(gp.projectile[gp.currentMap][i] == null) {
-                    gp.projectile[gp.currentMap][i] = projectile;
+            for(int i = 0; i < gp.projectiles[i].length; i++) {
+                if(gp.projectiles[gp.currentMap][i] == null) {
+                    gp.projectiles[gp.currentMap][i] = projectile;
                     break;
                 }
             }
@@ -395,16 +386,16 @@ public class Player extends Entity {
         if(i != 999) {
 
             // PICKUP ONLY ITEMS
-            if(gp.obj[gp.currentMap][i].type == type_pickUpOnly) {
+            if(gp.objects[gp.currentMap][i].type == type_pickUpOnly) {
 
-                gp.obj[gp.currentMap][i].use(this);
-                gp.obj[gp.currentMap][i] = null;
+                gp.objects[gp.currentMap][i].use(this);
+                gp.objects[gp.currentMap][i] = null;
             }
 
-            else if(gp.obj[gp.currentMap][i].type == type_obstacle) {
+            else if(gp.objects[gp.currentMap][i].type == type_obstacle) {
                 if(keyH.enterPressed == true) {
                     attackCancelled = true;
-                    gp.obj[gp.currentMap][i].interact();
+                    gp.objects[gp.currentMap][i].interact();
                 }
             }
 
@@ -412,15 +403,15 @@ public class Player extends Entity {
             else{
                 String text;
 
-                if(canObtainItem(gp.obj[gp.currentMap][i]) == true) {
+                if(canObtainItem(gp.objects[gp.currentMap][i]) == true) {
                     gp.playSE(1);
-                    text = "Got a " + gp.obj[gp.currentMap][i].name;
+                    text = "Got a " + gp.objects[gp.currentMap][i].name;
                 }
                 else {
                     text = "Your inventory is full";
                 }
                 gp.ui.addMessage(text);
-                gp.obj[gp.currentMap][i] = null;
+                gp.objects[gp.currentMap][i] = null;
             }
         }
     }
@@ -428,22 +419,22 @@ public class Player extends Entity {
         
         if(i != 999) {
             
-            if(gp.keyH.enterPressed) {
+            if(gp.keyHandler.enterPressed) {
                 attackCancelled = true;
-                gp.npc[gp.currentMap][i].speak();
+                gp.npcs[gp.currentMap][i].speak();
             }
             
-            gp.npc[gp.currentMap][i].move(direction);
+            gp.npcs[gp.currentMap][i].move(direction);
         }
     }
     public void contactMonster(int i) {
 
         if(i != 999) {
-            if(!invincible && !gp.monster[gp.currentMap][i].dying) {
+            if(!invincible && !gp.monsters[gp.currentMap][i].dying) {
         
                 gp.playSE(6);
 
-                int damage = gp.monster[gp.currentMap][i].attack - defense;
+                int damage = gp.monsters[gp.currentMap][i].attack - defense;
                 if(damage < 1) {
                     damage = 1;
                 }
@@ -458,63 +449,60 @@ public class Player extends Entity {
 
         if(i != 999) {
 
-            if(!gp.monster[gp.currentMap][i].invincible) {
+            if(!gp.monsters[gp.currentMap][i].invincible) {
                 
                 gp.playSE(5);
 
                 if(knockBackPower > 0) {
-                    setKnockBack(gp.monster[gp.currentMap][i], attacker, knockBackPower);
+                    setKnockBack(gp.monsters[gp.currentMap][i], attacker, knockBackPower);
                 }
                 
-                if(gp.monster[gp.currentMap][i].offBalance) {
+                if(gp.monsters[gp.currentMap][i].offBalance) {
                     attack *= 3;
                 }
 
-                int damage = attack - gp.monster[gp.currentMap][i].defense;
+                int damage = attack - gp.monsters[gp.currentMap][i].defense;
                 if(damage < 0) {
                     damage = 0;
                 }
-                gp.monster[gp.currentMap][i].life -= damage;
+                gp.monsters[gp.currentMap][i].life -= damage;
                 gp.ui.addMessage("dealt " + damage + " damage");
 
-                gp.monster[gp.currentMap][i].invincible = true;
-                gp.monster[gp.currentMap][i].damageReaction();
+                gp.monsters[gp.currentMap][i].invincible = true;
+                gp.monsters[gp.currentMap][i].damageReaction();
 
-                if(gp.monster[gp.currentMap][i].life <= 0) {
-                    gp.monster[gp.currentMap][i].dying = true;
-                    gp.ui.addMessage("Killed the " + gp.monster[gp.currentMap][i].name);
-                    gp.ui.addMessage("Exp + " + gp.monster[gp.currentMap][i].exp);
-                    exp += gp.monster[gp.currentMap][i].exp;
+                if(gp.monsters[gp.currentMap][i].life <= 0) {
+                    gp.monsters[gp.currentMap][i].dying = true;
+                    gp.ui.addMessage("Killed the " + gp.monsters[gp.currentMap][i].name);
+                    gp.ui.addMessage("Exp + " + gp.monsters[gp.currentMap][i].exp);
+                    exp += gp.monsters[gp.currentMap][i].exp;
                     checkLevelUp();
                 }
             }
         }
     }
-    public void damageProjectile(int i) {
-
-        if(i != 999) {
-            Entity projectile = gp.projectile[gp.currentMap][i];
-            projectile.alive = false;
-            generateParticle(projectile, projectile);
-        }
-    }
     public void damageInteractiveTile(int i) {
+        if(i != 999 && gp.interactiveTiles[gp.currentMap][i].destructible && gp.interactiveTiles[gp.currentMap][i].canBeDamaged(this) &&
+                !gp.interactiveTiles[gp.currentMap][i].invincible) {
 
-        if(i != 999 && gp.iTile[gp.currentMap][i].destructible && gp.iTile[gp.currentMap][i].isCorrectItem(this) &&
-                !gp.iTile[gp.currentMap][i].invincible) {
-
-            gp.iTile[gp.currentMap][i].playSE();
-            gp.iTile[gp.currentMap][i].life--;
-            gp.iTile[gp.currentMap][i].invincible = true;
+            gp.interactiveTiles[gp.currentMap][i].playSE();
+            gp.interactiveTiles[gp.currentMap][i].life--;
+            gp.interactiveTiles[gp.currentMap][i].invincible = true;
 
             // Generate particle
-            generateParticle(gp.iTile[gp.currentMap][i], gp.iTile[gp.currentMap][i]);
+            generateParticle(gp.interactiveTiles[gp.currentMap][i], gp.interactiveTiles[gp.currentMap][i]);
 
-            if(gp.iTile[gp.currentMap][i].life == 0) {
+            if(gp.interactiveTiles[gp.currentMap][i].life == 0) {
                 //gp.iTile[gp.currentMap][i].checkDrop();
-                gp.iTile[gp.currentMap][i] = gp.iTile[gp.currentMap][i].getDestroyedForm();
+                gp.interactiveTiles[gp.currentMap][i] = gp.interactiveTiles[gp.currentMap][i].getDestroyedForm();
             }
-
+        }
+    }
+    public void damageProjectile(int i) {
+        if(i != 999) {
+            Entity projectile = gp.projectiles[gp.currentMap][i];
+            projectile.alive = false;
+            generateParticle(projectile, projectile);
         }
     }
     public void checkLevelUp() {
@@ -547,7 +535,6 @@ public class Player extends Entity {
         }
     }
     public void draw(Graphics2D g2) {
-
         BufferedImage image = null;
         int tempScreenX = screenX;
         int tempScreenY = screenY;
@@ -707,50 +694,3 @@ public class Player extends Entity {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-// CODE WHEN THE AIM OF THE GAME WAS TO COLLECT THE CHESTS AND FIND THE TREASURE, THE AIM HAS BEEN CHANGED
-
-//public int hasKey = 0;
-/*
-String objectName = gp.obj[i].name;
-
-            switch(objectName) {
-            case "Key":
-                gp.playSE(1); // index in the Sound class
-                hasKey++;
-                gp.obj[i] = null;
-                gp.ui.showMessage("Key obtained!");
-                break;
-            case "Door":
-                if(hasKey > 0) {
-                    gp.playSE(3); // index in the Sound class
-                    gp.obj[i] = null;
-                    hasKey--;
-                    gp.ui.showMessage("Door opened!");
-                }
-                else{
-                    gp.ui.showMessage("You need a key");
-                }
-                break;
-            case "Boots":
-                gp.playSE(2); // index in the Sound class
-                speed += 1;
-                gp.obj[i] = null;
-                gp.ui.showMessage("Speed +1");
-                break;
-            case "Chest":
-                gp.ui.gameFinished = true;
-                gp.stopMusic();
-                gp.playSE(4);
-                break;
-            }
-*/
