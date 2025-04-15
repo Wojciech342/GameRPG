@@ -81,7 +81,6 @@ public class KeyHandler implements KeyListener{
                 if(gp.ui.commandNum == 1) {
                     gp.saveLoad.load();
                     gp.gameState = gp.playState;
-                    gp.playMusic(0);
                     
                 }
                 if(gp.ui.commandNum == 2) {
@@ -105,16 +104,13 @@ public class KeyHandler implements KeyListener{
             if(code == KeyEvent.VK_ENTER) {
                 if(gp.ui.commandNum == 0) {
                     gp.gameState = gp.playState;
-                    gp.playMusic(0);
                     
                 }
                 if(gp.ui.commandNum == 1) {
                     gp.gameState = gp.playState;
-                    gp.playMusic(0);
                 }
                 if(gp.ui.commandNum == 2) {
                     gp.gameState = gp.playState;
-                    gp.playMusic(0);
                 }
                 if(gp.ui.commandNum == 3) {
                     gp.ui.titleScreenState = 0;
@@ -151,16 +147,11 @@ public class KeyHandler implements KeyListener{
         if(code == KeyEvent.VK_ESCAPE) {
             gp.gameState = gp.optionsState;
         }
+        if(code == KeyEvent.VK_X) {
+            gp.map.miniMapOn = !gp.map.miniMapOn;
+        }
         if(code == KeyEvent.VK_M) {
             gp.gameState = gp.mapState;
-        }
-        if(code == KeyEvent.VK_X) {
-            if(gp.map.miniMapOn == false) {
-                gp.map.miniMapOn = true;
-            }
-            else {
-                gp.map.miniMapOn = false;
-            }
         }
         if(code == KeyEvent.VK_SPACE) {
             spacePressed = true;
