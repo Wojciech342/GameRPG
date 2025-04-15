@@ -1,10 +1,12 @@
-package main;
+package config;
+
+import main.GamePanel;
 
 import java.io.*;
 
 public class Config {
     GamePanel gp;
-    private final String configPath = "config.txt";
+    private final String configPath = "src/main/java/config/config.txt";
 
     public Config(GamePanel gp) {
         this.gp = gp;
