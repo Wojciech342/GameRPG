@@ -381,40 +381,6 @@ public class Player extends Entity {
         }
         
     }
-    public void pickUpObject(int i) {
-
-        if(i != 999) {
-
-            // PICKUP ONLY ITEMS
-            if(gp.objects[gp.currentMap][i].type == type_pickUpOnly) {
-
-                gp.objects[gp.currentMap][i].use(this);
-                gp.objects[gp.currentMap][i] = null;
-            }
-
-            else if(gp.objects[gp.currentMap][i].type == type_obstacle) {
-                if(keyH.enterPressed == true) {
-                    attackCancelled = true;
-                    gp.objects[gp.currentMap][i].interact();
-                }
-            }
-
-            // INVENTORY ITEMS
-            else{
-                String text;
-
-                if(canObtainItem(gp.objects[gp.currentMap][i]) == true) {
-                    gp.playSE(1);
-                    text = "Got a " + gp.objects[gp.currentMap][i].name;
-                }
-                else {
-                    text = "Your inventory is full";
-                }
-                gp.ui.addMessage(text);
-                gp.objects[gp.currentMap][i] = null;
-            }
-        }
-    }
     public void interactNPC(int i) {
         
         if(i != 999) {
@@ -425,6 +391,37 @@ public class Player extends Entity {
             }
             
             gp.npcs[gp.currentMap][i].move(direction);
+        }
+    }
+    public void pickUpObject(int i) {
+        if(i != 999) {
+            // PICKUP ONLY ITEMS
+            if(gp.objects[gp.currentMap][i].type == type_pickUpOnly) {
+                gp.objects[gp.currentMap][i].use(this);
+                gp.objects[gp.currentMap][i] = null;
+            }
+
+            else if(gp.objects[gp.currentMap][i].type == type_obstacle) {
+                if(keyH.enterPressed) {
+                    attackCancelled = true;
+                    gp.objects[gp.currentMap][i].interact();
+                }
+            }
+
+            // INVENTORY ITEMS
+            else{
+                String text;
+
+                if(canObtainItem(gp.objects[gp.currentMap][i])) {
+                    gp.playSE(1);
+                    text = "Got a " + gp.objects[gp.currentMap][i].name;
+                }
+                else {
+                    text = "Your inventory is full";
+                }
+                gp.ui.addMessage(text);
+                gp.objects[gp.currentMap][i] = null;
+            }
         }
     }
     public void contactMonster(int i) {
