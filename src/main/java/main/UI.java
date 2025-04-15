@@ -402,7 +402,7 @@ public class UI { // UI - User interface
                 gp.gameState = gp.playState;
             }
             if(gp.gameState == gp.cutSceneState) { // after everything is said go to the next scene
-                gp.csManager.scenePhase++;
+                gp.cutSceneManager.scenePhase++;
             }
         }
 
@@ -672,11 +672,11 @@ public class UI { // UI - User interface
         if(counter == 50) { // The transition is done
             counter = 0;
             gp.gameState = gp.playState;
-            gp.currentMap = gp.eHandler.tempMap;
-            gp.player.worldX = gp.eHandler.tempCol * gp.tileSize;
-            gp.player.worldY = gp.eHandler.tempRow * gp.tileSize;
-            gp.eHandler.previousEventX = gp.player.worldX;
-            gp.eHandler.previousEventY = gp.player.worldY;
+            gp.currentMap = gp.eventHandler.tempMap;
+            gp.player.worldX = gp.eventHandler.tempCol * gp.tileSize;
+            gp.player.worldY = gp.eventHandler.tempRow * gp.tileSize;
+            gp.eventHandler.previousEventX = gp.player.worldX;
+            gp.eventHandler.previousEventY = gp.player.worldY;
             gp.changeArea();
         }
 
@@ -733,7 +733,6 @@ public class UI { // UI - User interface
         y += gp.tileSize;
     }
     public void tradeBuy() {
-
         // DRAW PLAYER'S INVENTORY
         drawInventory(gp.player, false);
         // DRAW NPC INVENTORY
@@ -790,7 +789,6 @@ public class UI { // UI - User interface
         }
     }
     public void tradeSell() {
-
         // DRAW PLAYER INVENTORY
         drawInventory(gp.player, true);
 
@@ -848,6 +846,32 @@ public class UI { // UI - User interface
             }
         }
     }
+    public void drawSleepScreen() {
+
+        counter++;
+        gp.stopMusic();
+
+        if(counter < 120) {
+            gp.environmentManager.lighting.filterAlpha += 0.01f;
+            if(gp.environmentManager.lighting.filterAlpha > 1f) {
+                gp.environmentManager.lighting.filterAlpha = 1f;
+            }
+        }
+        if(counter >= 120) {
+            gp.environmentManager.lighting.filterAlpha -= 0.01f;
+            if(gp.environmentManager.lighting.filterAlpha <= 0f) {
+                gp.playMusic(0);
+                gp.environmentManager.lighting.filterAlpha = 0f;
+                counter = 0;
+                gp.environmentManager.lighting.dayState = gp.environmentManager.lighting.day;
+                gp.environmentManager.lighting.dayCounter = 0;
+                gp.gameState = gp.playState;
+                gp.player.getImage();
+            }
+        }
+    }
+
+
     public int getItemIndexOnSlot(int slotCol, int slotRow) {
         int itemIndex = slotCol + (slotRow*5);
         return itemIndex;
